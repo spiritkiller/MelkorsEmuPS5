@@ -1,0 +1,15 @@
+{
+    "emulator_exe": "emulator/melkors_ps5_core.exe",
+    "resolution": "720p (Performans)",
+    "vsync": false,
+    "pipeline_cache": true,
+    "verbose_logging": true,
+    "jit_optimization": true,
+    "audio_backend": "XAudio2 / WASAPI",
+    "language": "tr",
+    "deadzone": 10,
+    "shader_opt": "Performance",
+    "present_mode": "Immediate",
+    "vblank_hz": "60",
+    "readback_bypass": true
+}

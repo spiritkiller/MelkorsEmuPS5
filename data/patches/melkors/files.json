@@ -1,0 +1,88 @@
+{
+    "Bloodborne.xml": [
+        "CUSA00207",
+        "CUSA00208",
+        "CUSA00299",
+        "CUSA00900",
+        "CUSA01363",
+        "CUSA03014",
+        "CUSA03023",
+        "CUSA03173"
+    ],
+    "BlueRider.xml": [
+        "CUSA05653"
+    ],
+    "Catherine_FullBody.xml": [
+        "CUSA14836",
+        "CUSA15036"
+    ],
+    "Driveclub.xml": [
+        "CUSA00003",
+        "CUSA00064",
+        "CUSA00066",
+        "CUSA00093",
+        "CUSA00879"
+    ],
+    "HatsuneMiku_ProjectDIVAFutureTone.xml": [
+        "CUSA03828",
+        "CUSA05030",
+        "CUSA06093",
+        "CUSA06211",
+        "CUSA08026",
+        "CUSA08053"
+    ],
+    "Knack.xml": [
+        "CUSA00006"
+    ],
+    "LEGODimensions.xml": [
+        "CUSA01176"
+    ],
+    "PT.xml": [
+        "CUSA01127"
+    ],
+    "Persona3_DancingInMoonlight.xml": [
+        "CUSA12636"
+    ],
+    "Persona4_DancingAllNight.xml": [
+        "CUSA12112",
+        "CUSA12811"
+    ],
+    "Persona5_DancingInStarlight.xml": [
+        "CUSA12380"
+    ],
+    "Persona5_Royal.xml": [
+        "CUSA17416",
+        "CUSA17419"
+    ],
+    "Ratchet_and_Clank.xml": [
+        "CUSA01047",
+        "CUSA01073",
+        "CUSA01686",
+        "CUSA01928",
+        "CUSA02020"
+    ],
+    "SakuraWars.xml": [
+        "CUSA13045",
+        "CUSA16404",
+        "CUSA16429"
+    ],
+    "SotC.xml": [
+        "CUSA08804",
+        "CUSA08809",
+        "CUSA08034"
+    ],
+    "TheLastGuardian.xml": [
+        "CUSA03627",
+        "CUSA03745",
+        "CUSA04936",
+        "CUSA05152"
+    ],
+    "TheOrder1886.xml": [
+        "CUSA00035",
+        "CUSA00070",
+        "CUSA00076",
+        "CUSA00100",
+        "CUSA00670",
+        "CUSA00785"
+    ]
+}

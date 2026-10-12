@@ -1,0 +1,42 @@
+# MelkorS PS5 - Git Ignore Rules
+
+# Python & Build artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+build/
+dist/
+*.spec
+*.zip
+*.exe
+*.log
+
+# Giant game dumps & packages (users provide their own)
+games/*
+!games/README_GAMES.txt
+!games/.gitkeep
+*.pkg
+*.zar
+
+# Emulator runtime caches & user data
+logs/*.log
+emulator/_DownloadData/
+emulator/_PipelineCache/
+emulator/_SaveData/
+emulator/_TempData/
+emulator/_Textures/
+emulator/*.iconbak
+emulator/*.log
+
+# Environment & scratch files
+scratch/
+.system_generated/
+*.tmp
+
+# Submodules & external repositories
+src/core/
+tools/ps4_pkg_tool/
+
+# Internal developer notes (not for public distribution)
+memorybank/
