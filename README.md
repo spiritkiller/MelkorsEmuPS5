@@ -54,6 +54,7 @@ The following titles have been tested and verified to boot and run on MelkorS PS
 | **Enotria: The Last Song** | `PPSA20515` | **PS5** | MelkorS PS5 Core | 🟡 Main Menu |
 | **God of War: Sons of Sparta** | *Community Dump* | **PS5 / PS4** | MelkorS Core | ✅ Playable |
 | **Pocket Bravery** | `CUSA41703` | **PS4** | MelkorS PS4 Core | ✅ Playable |
+| **Luna Abyss** | `PPSA36257` | **PS5** | MelkorS PS5 Core | 🎬 In-Game Intro Cinematic |
 
 *(More titles will be added as community compatibility tests continue.)*
 
@@ -124,6 +125,7 @@ MelkorS PS5 is an independent, community-driven project. If you would like to su
 - **Enotria: The Last Song** (`PPSA20515` - PS5) — 🟡 Ana Menü / Giriş (Main Menu)
 - **God of War: Sons of Sparta** — ✅ Çalışıyor
 - **Pocket Bravery** (`CUSA41703` - PS4) — ✅ Çalışıyor
+- **Luna Abyss** (`PPSA36257` - PS5) — 🎬 Oyun İçi Açılış Sinematiği (In-Game Intro Cinematic)
 
 ### 💖 Bağış ve Destek
 
