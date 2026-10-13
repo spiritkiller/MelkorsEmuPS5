@@ -50,6 +50,7 @@ The following titles have been tested and verified to boot and run on MelkorS PS
 | :--- | :--- | :--- | :--- | :--- |
 | **Harmony's Odyssey** | `PPSA16827` | **PS5** | MelkorS PS5 Core | ✅ Playable |
 | **Evil Inside** | `PPSA02508` | **PS5** | MelkorS PS5 Core | ✅ Playable |
+| **The Thing: Remastered** | `PPSA24381` | **PS5** | MelkorS PS5 Core | ✅ Playable |
 | **Enotria: The Last Song** | `PPSA20515` | **PS5** | MelkorS PS5 Core | 🟡 Main Menu |
 | **God of War: Sons of Sparta** | *Community Dump* | **PS5 / PS4** | MelkorS Core | ✅ Playable |
 | **Pocket Bravery** | `CUSA41703` | **PS4** | MelkorS PS4 Core | ✅ Playable |
@@ -119,6 +120,7 @@ MelkorS PS5 is an independent, community-driven project. If you would like to su
 
 - **Harmony's Odyssey** (`PPSA16827` - PS5) — ✅ Çalışıyor
 - **Evil Inside** (`PPSA02508` - PS5) — ✅ Çalışıyor
+- **The Thing: Remastered** (`PPSA24381` - PS5) — ✅ Çalışıyor
 - **Enotria: The Last Song** (`PPSA20515` - PS5) — 🟡 Ana Menü / Giriş (Main Menu)
 - **God of War: Sons of Sparta** — ✅ Çalışıyor
 - **Pocket Bravery** (`CUSA41703` - PS4) — ✅ Çalışıyor
