@@ -25,6 +25,7 @@ from log_analyzer import LogAnalyzer
 from translations import TRANSLATIONS
 from controller_manager import ControllerManager
 from game_overlay import GameOverlayBar
+from patch_manager import PatchManager
 
 if getattr(sys, "frozen", False):
     BASE_DIR = os.path.abspath(os.path.dirname(sys.executable))
@@ -310,6 +311,14 @@ class MelkorSWindow(QMainWindow):
         self.btn_extract.setVisible(False)
         self.btn_extract.clicked.connect(self.extract_selected_pkg)
         actions_box.addWidget(self.btn_extract)
+
+        self.btn_auto_patch = QPushButton("⚡ UE5 Yama Tara / Oluştur")
+        self.btn_auto_patch.setObjectName("secondaryBtn")
+        self.btn_auto_patch.setFixedHeight(44)
+        self.btn_auto_patch.setVisible(False)
+        self.btn_auto_patch.setToolTip("Unreal Engine 5 motoruna ait bilinen çökme açıklarını tarar ve otomatik XML/JSON yama dosyası oluşturur.")
+        self.btn_auto_patch.clicked.connect(self.scan_and_patch_selected_game)
+        actions_box.addWidget(self.btn_auto_patch)
 
         self.btn_stop = QPushButton(self.t["stop_game"])
         self.btn_stop.setObjectName("stopBtn")
@@ -689,11 +698,21 @@ class MelkorSWindow(QMainWindow):
         else:
             self.lbl_cover.setVisible(False)
 
+        # Check for active XML/JSON patch
+        pm = PatchManager(BASE_DIR)
+        patch_file = pm.find_patch_for_title(game.title_id)
+        if patch_file:
+            patch_name = os.path.basename(patch_file)
+            patch_status_html = f"<br><b>Yama Durumu:</b> <span style='color: #2ea44f; font-weight: bold;'>🛡️ Aktif ({patch_name})</span>"
+        else:
+            patch_status_html = "<br><b>Yama Durumu:</b> <span style='color: #8b949e;'>Yama yok</span>"
+
         status_color = "#58a6ff" if (game.has_fakelib or game.is_pkg) else "#f85149"
         info_text = (
             f"<b>Title ID:</b> {game.title_id}<br>"
             f"<b>Sürüm:</b> {game.version}<br>"
-            f"<b>Durum:</b> <span style='color: {status_color}; font-weight: bold;'>{game.status}</span><br>"
+            f"<b>Durum:</b> <span style='color: {status_color}; font-weight: bold;'>{game.status}</span>"
+            f"{patch_status_html}<br>"
             f"<b>Dosya/Klasör:</b> {game.folder_path}"
         )
         self.detail_info.setText(info_text)
@@ -702,10 +721,59 @@ class MelkorSWindow(QMainWindow):
             self.btn_launch.setEnabled(False)
             self.btn_extract.setVisible(True)
             self.btn_extract.setEnabled(True)
+            self.btn_auto_patch.setVisible(False)
         else:
             self.btn_launch.setEnabled(True)
             self.btn_extract.setVisible(False)
+            self.btn_auto_patch.setVisible(True)
+            self.btn_auto_patch.setEnabled(True)
             self.update_modules_tab_for_game(game)
+
+    def scan_and_patch_selected_game(self):
+        """Scans the selected game for UE5 crash patterns and generates an auto-patch file."""
+        if not self.selected_game or self.selected_game.is_pkg:
+            return
+
+        game = self.selected_game
+        eboot_path = game.eboot_path
+        if not eboot_path or not os.path.exists(eboot_path):
+            QMessageBox.warning(self, "Uyarı", f"Oyun eboot.bin dosyası bulunamadı:\n{eboot_path}")
+            return
+
+        self.btn_auto_patch.setEnabled(False)
+        self.btn_auto_patch.setText("⏳ Taranıyor...")
+        QApplication.processEvents()
+
+        try:
+            from tools.ue5_patch_scanner import UE5PatchScanner
+            scanner = UE5PatchScanner(eboot_path, title_id=game.title_id, app_ver=game.version or "01.000.000")
+            patches = scanner.scan_all()
+
+            patches_dir = os.path.join(BASE_DIR, "patches")
+            json_out = os.path.join(patches_dir, f"{game.title_id}.json")
+            xml_out = os.path.join(patches_dir, f"{game.title_id}.xml")
+            scanner.export_json(json_out)
+            scanner.export_xml(xml_out)
+
+            msg = (
+                f"UE5 Motor Taraması Başarıyla Tamamlandı!\n\n"
+                f"Toplam {len(patches)} adet motor çökme açığı tespit edildi.\n\n"
+                f"Oluşturulan Yamalar:\n"
+                f"• {os.path.basename(json_out)} (MelkorS / GoldHEN Mod)\n"
+                f"• {os.path.basename(xml_out)} (shadPS4 XML Mod)\n\n"
+                f"Bu yamalar oyun başlatılırken MelkorS Core tarafından bellek üzerinde otomatik olarak uygulanacaktır."
+            )
+            QMessageBox.information(self, "Yama Oluşturuldu", msg)
+
+            # Refresh details UI
+            if self.games_list.currentItem():
+                self.on_game_selected(self.games_list.currentItem())
+
+        except Exception as e:
+            QMessageBox.critical(self, "Hata", f"Yama taraması sırasında hata oluştu:\n{e}")
+        finally:
+            self.btn_auto_patch.setEnabled(True)
+            self.btn_auto_patch.setText("⚡ UE5 Yama Tara / Oluştur")
 
     def extract_selected_pkg(self):
         if not self.selected_game or not self.selected_game.is_pkg:

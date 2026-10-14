@@ -44,6 +44,22 @@ class ProcessRunner(QObject):
         if is_ps5:
             # MelkorS PS5 Core CLI: --game <path> --printf-direction Silent (prevents audio crackling and FPS drops)
             args = ["--game", target_path, "--printf-direction", "Silent", "--user-name", "MelkorS"]
+            
+            # Auto-detect and apply game patch (XML or JSON) if available
+            try:
+                import re
+                from gui.patch_manager import PatchManager
+                pm = PatchManager()
+                match = re.search(r'(PPSA\d{5}|CUSA\d{5})', target_path, re.IGNORECASE)
+                if match:
+                    title_id = match.group(1).upper()
+                    patch_path = pm.find_patch_for_title(title_id)
+                    if patch_path and os.path.exists(patch_path):
+                        args.extend(["--game-patch", patch_path])
+                        self.log_received.emit(f"[MelkorS] 🎮 Otomatik yama algılandı ve çekirdeğe yüklendi: {os.path.basename(patch_path)}", "SYS")
+            except Exception as e:
+                self.log_received.emit(f"[UYARI] Yama kontrolü sırasında hata: {e}", "WARN")
+
             if extra_args:
                 args.extend(extra_args)
         else:
