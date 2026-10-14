@@ -55,6 +55,7 @@ The following titles have been tested and verified to boot and run on MelkorS PS
 | **God of War: Sons of Sparta** | *Community Dump* | **PS5 / PS4** | MelkorS Core | ✅ Playable |
 | **Pocket Bravery** | `CUSA41703` | **PS4** | MelkorS PS4 Core | ✅ Playable |
 | **Luna Abyss** | `PPSA36257` | **PS5** | MelkorS PS5 Core | 🎬 In-Game Intro Cinematic |
+| **Warhammer 40,000: Boltgun** | `PPSA07247` | **PS5** | MelkorS PS5 Core | 🟡 In-Game (~20 FPS) |
 
 *(More titles will be added as community compatibility tests continue.)*
 
@@ -63,7 +64,7 @@ The following titles have been tested and verified to boot and run on MelkorS PS
 ## 📥 Getting Started & Usage Guide
 
 1. **Download & Extract:**
-   - Grab the latest `MelkorSPS5-v1.0.0-Windows-x64.zip` release from the [Releases](https://github.com/spiritkiller/MelkorsEmuPS5/releases) tab.
+   - Grab the latest `MelkorSPS5-v1.5.0-Windows-x64.zip` release from the [Releases](https://github.com/spiritkiller/MelkorsEmuPS5/releases) tab.
    - Extract the contents to any folder on your computer.
 2. **Add Your Games:**
    - Place your decrypted PS5 or PS4 game folders (or `.pkg` packages) into the `games/` folder:
@@ -126,6 +127,7 @@ MelkorS PS5 is an independent, community-driven project. If you would like to su
 - **God of War: Sons of Sparta** — ✅ Çalışıyor
 - **Pocket Bravery** (`CUSA41703` - PS4) — ✅ Çalışıyor
 - **Luna Abyss** (`PPSA36257` - PS5) — 🎬 Oyun İçi Açılış Sinematiği (In-Game Intro Cinematic)
+- **Warhammer 40,000: Boltgun** (`PPSA07247` - PS5) — 🟡 Oyun İçi (~20 FPS)
 
 ### 💖 Bağış ve Destek
 
