@@ -7,7 +7,7 @@ Applies optimal core routing, Vulkan pipeline caching, shader optimization, and 
 import os
 import json
 import re
-from dataclasses import dataclass, field, asdict
+from dataclasses import dataclass, field, asdict, fields
 from typing import Dict, List, Optional
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -24,6 +24,7 @@ class GameProfile:
     present_mode: str = "Mailbox"      # "Mailbox", "Immediate", "Fifo"
     vblank_hz: int = 60                # 60, 120
     readback_bypass: bool = True       # skips linear image readbacks for high FPS
+    audio_buffer: int = 2048           # SDL audio sample frames (1024, 2048, 4096) to eliminate crackle
     patch_id: Optional[str] = None     # explicit patch mapping
     extra_cli_args: List[str] = field(default_factory=list)
     notes: str = ""
@@ -232,15 +233,18 @@ class GameDB:
 
     def _load(self):
         """Load default profiles then merge with user customizations from gamedb.json."""
+        valid_keys = {f.name for f in fields(GameProfile)}
         for tid, data in DEFAULT_PROFILES.items():
-            self.profiles[tid] = GameProfile(**data)
+            filtered = {k: v for k, v in data.items() if k in valid_keys}
+            self.profiles[tid] = GameProfile(**filtered)
 
         if os.path.exists(GAMEDB_FILE):
             try:
                 with open(GAMEDB_FILE, "r", encoding="utf-8") as f:
                     user_data = json.load(f)
                 for tid, data in user_data.items():
-                    self.profiles[tid] = GameProfile(**data)
+                    filtered = {k: v for k, v in data.items() if k in valid_keys}
+                    self.profiles[tid] = GameProfile(**filtered)
             except Exception as e:
                 print(f"[GameDB] Error loading custom gamedb: {e}")
 

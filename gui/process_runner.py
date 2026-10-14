@@ -7,7 +7,12 @@ and zero-regression modular patch injection.
 import os
 import re
 import datetime
-from PyQt6.QtCore import QObject, QProcess, pyqtSignal, QTimer
+try:
+    import psutil
+    _PSUTIL_AVAILABLE = True
+except ImportError:
+    _PSUTIL_AVAILABLE = False
+from PyQt6.QtCore import QObject, QProcess, pyqtSignal, QTimer, QProcessEnvironment
 
 class ProcessRunner(QObject):
     log_received = pyqtSignal(str, str)      # (line, level)
@@ -22,10 +27,17 @@ class ProcessRunner(QObject):
         self.current_log_file = None
         self._install_mode = False
 
-    def start_game(self, emulator_exe: str, target_path: str, is_ps5: bool = True, extra_args: list = None):
-        """Launch a game via MelkorS Core with autonomous profile optimization."""
+    def start_game(self, emulator_exe: str, target_path: str, is_ps5: bool = True, extra_args: list = None, disable_auto_patch: bool = False, audio_buffer: int = 2048, high_priority: bool = True):
+        """Launch a game via MelkorS Core with autonomous profile optimization.
+        
+        audio_buffer: SDL audio sample frames (1024, 2048, 4096) to eliminate crackles.
+        high_priority: Elevate process priority to HIGH to prevent audio/render thread stalls.
+        """
         if self.is_running():
             return False
+
+        self.audio_buffer = audio_buffer
+        self.high_priority = high_priority
 
         if not os.path.exists(target_path):
             self.log_received.emit(f"[HATA] Oyun dosyası bulunamadı: {target_path}", "ERROR")
@@ -42,12 +54,38 @@ class ProcessRunner(QObject):
         if match:
             title_id = match.group(1).upper()
 
-        from game_db import GameDB
-        from patch_manager import PatchManager
+        try:
+            from game_db import GameDB
+            from patch_manager import PatchManager
+            gdb = GameDB()
+            profile = gdb.get_profile(title_id, eboot_path=target_path)
+            pm = PatchManager()
+        except Exception as import_err:
+            self.log_received.emit(f"[UYARI] GameDB yüklenemedi ({import_err}), varsayılan profil kullanılıyor.", "WARN")
+            # Minimal fallback profile — just enough to launch the game
+            from dataclasses import dataclass, field
+            from typing import List, Optional
 
-        gdb = GameDB()
-        profile = gdb.get_profile(title_id, eboot_path=target_path)
-        pm = PatchManager()
+            @dataclass
+            class _FallbackProfile:
+                title_id: str = title_id
+                name: str = "Varsayılan Profil"
+                core: str = "ps5"
+                engine: str = "Unknown"
+                shader_opt: str = "Performance"
+                present_mode: str = "Mailbox"
+                vblank_hz: int = 60
+                readback_bypass: bool = True
+                patch_id: Optional[str] = None
+                extra_cli_args: List[str] = field(default_factory=list)
+                notes: str = ""
+
+            class _NullPatchManager:
+                def find_patch_for_title(self, *a, **kw): return None
+                def get_patch_name(self, *a, **kw): return None
+
+            profile = _FallbackProfile()
+            pm = _NullPatchManager()
 
         # 2. Intelligent Core Routing: Auto-switch between PS5 / PS4 core based on profile
         emu_dir = os.path.dirname(os.path.abspath(emulator_exe))
@@ -72,16 +110,33 @@ class ProcessRunner(QObject):
         pipeline_cache_dir = os.path.join(emu_dir, "_PipelineCache")
         os.makedirs(pipeline_cache_dir, exist_ok=True)
 
+        # 3.1 Ensure full controller input mapping exists for title
+        self._ensure_input_config(emu_dir, title_id)
+
         self.process = QProcess()
         self.process.setProgram(chosen_exe)
 
+        # Configure Process Environment (SDL Audio Buffer & 1ms Precision Timer)
+        env = QProcessEnvironment.systemEnvironment()
+        env.insert("SDL_AUDIO_DEVICE_SAMPLE_FRAMES", str(self.audio_buffer))
+        env.insert("SDL_TIMER_RESOLUTION", "1")
+        self.process.setProcessEnvironment(env)
+
         # 4. Construct Command Line Arguments
+        #
+        # ARCHITECTURE: args are built in strict priority order:
+        #   base  →  profile fields  →  extra_cli_args (profile extras, NO flag repeats)
+        #         →  extra_args from GUI (NO flag repeats, flag+value pairs deduplicated together)
+        #
+        # Deduplication: We track seen FLAG names (e.g. "--shader-optimization-type").
+        # When we encounter a flag already seen, we skip BOTH the flag AND its next value token.
+
         args = []
         if chosen_is_ps5:
-            # MelkorS PS5 Core CLI:
+            # -- Base arguments (always present) --
             args = ["--game", target_path, "--printf-direction", "Silent", "--user-name", "MelkorS"]
 
-            # Vulkan & Pipeline Optimization flags from profile
+            # -- Profile field arguments --
             if profile.shader_opt:
                 args.extend(["--shader-optimization-type", profile.shader_opt])
             if profile.present_mode:
@@ -91,53 +146,126 @@ class ProcessRunner(QObject):
             if profile.readback_bypass:
                 args.extend(["--readback-linear-images", "false"])
 
-            # Merge profile extra CLI arguments (skip duplicates by flag name)
-            seen_flags = set()
-            for a in args:
-                if a.startswith("--") or a.startswith("-"):
-                    seen_flags.add(a)
-            for extra in profile.extra_cli_args:
-                if extra.startswith("-") and extra in seen_flags:
-                    continue
-                args.append(extra)
-                if extra.startswith("-"):
-                    seen_flags.add(extra)
+            # -- Helper: build set of flags already in args list --
+            def _seen_flags(arg_list):
+                return {a for a in arg_list if a.startswith("-")}
 
-            # Auto-detect and attach stability patch
-            try:
-                patch_path = pm.find_patch_for_title(title_id, for_ps4=False, eboot_path=target_path)
-                if patch_path and os.path.exists(patch_path):
-                    args.extend(["--game-patch", patch_path])
-                    patch_name = pm.get_patch_name(title_id) or os.path.basename(patch_path)
-                    self.log_received.emit(f"[MelkorS] 🎮 Otomatik Yama Aktif: {patch_name} ({os.path.basename(patch_path)})", "SYS")
-            except Exception as e:
-                self.log_received.emit(f"[UYARI] Yama yükleme kontrolü: {e}", "WARN")
+            seen = _seen_flags(args)
 
+            # -- Profile extra_cli_args: skip pairs whose flag is already seen --
+            i = 0
+            while i < len(profile.extra_cli_args):
+                token = profile.extra_cli_args[i]
+                if token.startswith("-"):
+                    if token in seen:
+                        # Skip this flag AND its value (if next token is a value)
+                        i += 1
+                        if i < len(profile.extra_cli_args) and not profile.extra_cli_args[i].startswith("-"):
+                            i += 1
+                        continue
+                    seen.add(token)
+                    args.append(token)
+                    # Append value token if present
+                    i += 1
+                    if i < len(profile.extra_cli_args) and not profile.extra_cli_args[i].startswith("-"):
+                        args.append(profile.extra_cli_args[i])
+                        i += 1
+                else:
+                    # Bare value token with no flag (shouldn't happen, but be safe)
+                    args.append(token)
+                    i += 1
+
+            # -- Auto-detect and attach stability patch --
+            if disable_auto_patch:
+                self.log_received.emit("[MelkorS] ⛔ Otomatik Yama devre dışı bırakıldı (kullanıcı tercihi).", "WARN")
+            else:
+                try:
+                    patch_path = pm.find_patch_for_title(title_id, for_ps4=False, eboot_path=target_path)
+                    if patch_path and os.path.exists(patch_path):
+                        args.extend(["--game-patch", patch_path])
+                        patch_name = pm.get_patch_name(title_id) or os.path.basename(patch_path)
+                        self.log_received.emit(f"[MelkorS] 🎮 Otomatik Yama Aktif: {patch_name} ({os.path.basename(patch_path)})", "SYS")
+                except Exception as e:
+                    self.log_received.emit(f"[UYARI] Yama yükleme kontrolü: {e}", "WARN")
+
+            # -- GUI extra_args: same pair-aware deduplication --
             if extra_args:
-                for a in extra_args:
-                    if a not in args:
-                        args.append(a)
+                seen = _seen_flags(args)
+                j = 0
+                while j < len(extra_args):
+                    token = extra_args[j]
+                    if token.startswith("-"):
+                        if token in seen:
+                            # Skip flag + its value
+                            j += 1
+                            if j < len(extra_args) and not extra_args[j].startswith("-"):
+                                j += 1
+                            continue
+                        seen.add(token)
+                        args.append(token)
+                        j += 1
+                        if j < len(extra_args) and not extra_args[j].startswith("-"):
+                            args.append(extra_args[j])
+                            j += 1
+                    else:
+                        args.append(token)
+                        j += 1
+
         else:
-            # MelkorS PS4 Core CLI:
+            # -- MelkorS PS4 Core CLI --
             args = []
-            if extra_args:
-                args.extend(extra_args)
+            seen = set()
 
-            # Extra flags from profile (e.g. --show-fps)
-            for extra in profile.extra_cli_args:
-                if extra not in args:
-                    args.append(extra)
+            # GUI extra_args first (they have highest priority for PS4)
+            if extra_args:
+                j = 0
+                while j < len(extra_args):
+                    token = extra_args[j]
+                    if token.startswith("-"):
+                        seen.add(token)
+                        args.append(token)
+                        j += 1
+                        if j < len(extra_args) and not extra_args[j].startswith("-"):
+                            args.append(extra_args[j])
+                            j += 1
+                    else:
+                        args.append(token)
+                        j += 1
+
+            # Profile extra CLI args (skip flags already added)
+            i = 0
+            while i < len(profile.extra_cli_args):
+                token = profile.extra_cli_args[i]
+                if token.startswith("-"):
+                    if token in seen:
+                        i += 1
+                        if i < len(profile.extra_cli_args) and not profile.extra_cli_args[i].startswith("-"):
+                            i += 1
+                        continue
+                    seen.add(token)
+                    args.append(token)
+                    i += 1
+                    if i < len(profile.extra_cli_args) and not profile.extra_cli_args[i].startswith("-"):
+                        args.append(profile.extra_cli_args[i])
+                        i += 1
+                else:
+                    args.append(token)
+                    i += 1
 
             # Auto-detect patch for PS4 (XML supported natively via -p)
-            try:
-                patch_path = pm.find_patch_for_title(title_id, for_ps4=True, eboot_path=target_path)
-                if patch_path and os.path.exists(patch_path):
-                    args.extend(["-p", patch_path])
-                    patch_name = pm.get_patch_name(title_id) or os.path.basename(patch_path)
-                    self.log_received.emit(f"[MelkorS] 🎮 Otomatik PS4 Yaması Aktif: {patch_name} ({os.path.basename(patch_path)})", "SYS")
-            except Exception as e:
-                self.log_received.emit(f"[UYARI] PS4 Yama kontrolü: {e}", "WARN")
+            if disable_auto_patch:
+                self.log_received.emit("[MelkorS] ⛔ PS4 Otomatik Yama devre dışı bırakıldı (kullanıcı tercihi).", "WARN")
+            else:
+                try:
+                    patch_path = pm.find_patch_for_title(title_id, for_ps4=True, eboot_path=target_path)
+                    if patch_path and os.path.exists(patch_path):
+                        args.extend(["-p", patch_path])
+                        patch_name = pm.get_patch_name(title_id) or os.path.basename(patch_path)
+                        self.log_received.emit(f"[MelkorS] 🎮 Otomatik PS4 Yaması Aktif: {patch_name} ({os.path.basename(patch_path)})", "SYS")
+                except Exception as e:
+                    self.log_received.emit(f"[UYARI] PS4 Yama kontrolü: {e}", "WARN")
 
+            # Game path always last for PS4 core
             args.extend(["-g", target_path])
 
         self.process.setArguments(args)
@@ -153,6 +281,7 @@ class ProcessRunner(QObject):
         self.log_received.emit(f"[MelkorS] 🧠 Otonom Profil: {profile.name} [{title_id}]", "SYS")
         self.log_received.emit(f"[MelkorS] ⚡ Çekirdek: {core_display} | Motor: {profile.engine} | Shader: {profile.shader_opt} | Yenileme: {profile.vblank_hz}Hz", "SYS")
         self.log_received.emit(f"[MelkorS] 🚀 Vulkan Pipeline Kütüphanesi (GPL Fast-Link) ve Disk Önbelleği Devrede.", "GPU")
+        self.log_received.emit(f"[MelkorS] 📋 Argümanlar: {' '.join(args)}", "SYS")
 
         self.process.start()
         return True
@@ -213,6 +342,16 @@ class ProcessRunner(QObject):
         msg = "[MelkorS] Oyun başlatıldı."
         self._write_to_file(msg)
         self.log_received.emit(msg, "SYS")
+
+        if _PSUTIL_AVAILABLE and getattr(self, "high_priority", False):
+            try:
+                pid = self.process.processId()
+                p = psutil.Process(pid)
+                p.nice(psutil.HIGH_PRIORITY_CLASS)
+                self.log_received.emit(f"[MelkorS] 🔊 Ses Cızırtı Önleyici: {getattr(self, 'audio_buffer', 2048)} frame tampon & YÜKSEK işlem önceliği devrede.", "SYS")
+            except Exception as e:
+                self.log_received.emit(f"[MelkorS] İşlem önceliği ayarlanamadı: {e}", "WARN")
+
         self.process_started.emit()
 
     def _on_install_started(self):
@@ -298,3 +437,20 @@ class ProcessRunner(QObject):
                     f.write(text + "\n")
             except Exception:
                 pass
+
+    def _ensure_input_config(self, emu_dir: str, title_id: str):
+        """Ensures that the game has a valid input mapping configuration with all controller buttons."""
+        if not title_id:
+            return
+        try:
+            base_dir = os.path.dirname(os.path.abspath(emu_dir))
+            input_cfg_dir = os.path.join(base_dir, "data", "input_config")
+            os.makedirs(input_cfg_dir, exist_ok=True)
+            game_ini = os.path.join(input_cfg_dir, f"{title_id}.ini")
+            def_ini = os.path.join(input_cfg_dir, "default.ini")
+
+            if not os.path.exists(game_ini) and os.path.exists(def_ini):
+                import shutil
+                shutil.copy2(def_ini, game_ini)
+        except Exception:
+            pass

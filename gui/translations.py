@@ -1,5 +1,5 @@
 """
-MelkorS PS5 - Localization & Translation Strings (TR / EN)
+MelkorS PS5 - Comprehensive Localization & Translation Strings (TR / EN)
 Universal PlayStation 5 Gaming Edition
 """
 
@@ -49,8 +49,8 @@ TRANSLATIONS = {
         "language_label": "Arayüz Dili / Language:",
         "controller_box_title": "Algılanan Oyun Kolu / Gamepad",
         "controller_type": "Giriş Arayüzü (Input API):",
-        "controller_status_connected": "✔ DualSense / XInput Uyumlu Kontrollör Algılandı",
-        "controller_status_none": "Oyun Kolu Aranıyor (XInput / DualSense)...",
+        "controller_status_connected": "✔ DualSense / XInput Uyumlu Kontrollör Bağlı (Port {port})",
+        "controller_status_none": "Oyun Kolu Aranıyor (USB / Bluetooth XInput bekleniyor)...",
         "test_vibration": "⚡ Titreşim & Haptik Testi",
         "deadzone_label": "Analog Deadzone (Ölü Bölge):",
         "rumble_success": "Titreşim sinyali gönderildi!",
@@ -85,7 +85,74 @@ TRANSLATIONS = {
         "patch_scan_complete_msg": "UE5 Motor Taraması Başarıyla Tamamlandı!\n\nToplam {count} adet motor çökme açığı tespit edildi.\n\nOluşturulan Yamalar:\n• {json} (MelkorS / GoldHEN Mod)\n• {xml} (shadPS4 XML Mod)\n\nBu yamalar oyun başlatılırken MelkorS Core tarafından bellek üzerinde otomatik olarak uygulanacaktır.",
         "profile_label": "Otonom Profil:",
         "vulkan_pipeline_label": "Vulkan Pipeline:",
-        "vulkan_pipeline_status": "🚀 GPL Fast-Link & Disk Önbelleği Devrede"
+        "vulkan_pipeline_status": "🚀 GPL Fast-Link & Disk Önbelleği Devrede",
+        "audio_box_title": "🔊 Ses Yapılandırması & Cızırtı Önleyici",
+        "audio_buffer_label": "Ses Tampon Boyutu (Buffer):",
+        "audio_priority_label": "⚡ Yüksek İşlem Önceliği (Ses ve shader takılmalarını engeller)",
+        "audio_priority_tooltip": "Emülatör işlemine Windows üzerinde YÜKSEK öncelik vererek ses iş parçacıklarının (audio threads) kesintiye uğramasını ve cızırtı yapmasını önler.",
+        "patch_box_title": "🩹 Yama Ayarları (Patch Settings)",
+        "disable_patch_label": "⛔ Otomatik Yamayı Kapat (Oyun açılmıyorsa dene)",
+        "disable_patch_tooltip": "Etkinleştirilirse, MelkorS otomatik yama (--game-patch) eklemeyi devre dışı bırakır.\nBir oyun açılmıyorsa veya yama çakışması yaşanıyorsa bu seçeneği aç.",
+        "clear_cache_btn": "🗑️ Vulkan Önbelleğini Temizle",
+        "clear_cache_success": "Vulkan boru hattı önbelleği (_PipelineCache) başarıyla temizlendi.",
+        "mem_retry_msg": "⚠️ Bellek Rezerve Edilemedi (Windows Commit Limit). Otomatik tekrar deneniyor ({attempt}/2)...",
+        "extract_pkg_btn": "📦 PKG Paketini Kur / Ayıkla",
+        "ctrl_preview_title": "🎮 PlayStation 5 DualSense Kontrol Şeması",
+        "ctrl_preview_text": (
+            "• <b>Üçgen (Triangle):</b> XInput: Y | Eylem 2 (Action 2 / Secondary / Switch)<br>"
+            "• <b>Çarpı (Cross):</b> XInput: A | Onay / Zıplama / Etkileşim (Confirm / Jump / Interact)<br>"
+            "• <b>Daire (Circle):</b> XInput: B | İptal / Eğilme / Kaçınma (Cancel / Crouch / Dodge)<br>"
+            "• <b>Kare (Square):</b> XInput: X | Birincil Eylem / Saldırı / Yenileme (Attack / Reload)<br>"
+            "• <b>L1 / R1:</b> XInput: LB / RB | Sol / Sağ Üst Tamponlar (Bumper / Shoulder Buttons)<br>"
+            "• <b>L2 / R2:</b> XInput: LT / RT | Analog Tetikler (Nişan Alma & Ateş / Gaz & Fren)<br>"
+            "• <b>L3 / R3:</b> Sol / Sağ Analog Tıklama (Sprint / Yakın Dövüş / Kamera Sıfırlama)<br>"
+            "• <b>D-Pad & Analoglar:</b> Yön Tuşları, Envanter / Karakter Hareketi ve Kamera Kontrolü<br>"
+            "• <b>Options & Create:</b> Duraklat / Oyun Menüsü ve Paylaşım Tuşları"
+        ),
+        "empty_library": "Henüz oyun eklenmedi (games/ klasörüne atın)",
+        "game_ver": "Sürüm:",
+        "game_folder": "Dosya/Klasör:",
+        "game_launching": "▶ MelkorS {core} Çekirdeği başlatılıyor: {name}...",
+        "game_stopped": "Oyun durduruldu.",
+        "game_finished_ok": "Oyun başarıyla tamamlandı.",
+        "game_finished_code": "Oyun sonlandı (Çıkış kodu: {code}). Log sekmesinden detayları görebilirsiniz.",
+        "ready": "Hazır.",
+        "library_updating": "🔄 Oyun kütüphanesi güncelleniyor...",
+        "pkg_installed_ok": "✅ {name} başarıyla kuruldu!",
+        "pkg_install_complete": "✅ Kurulum tamamlandı. Kütüphane güncellendi.",
+        "core_error_title": "MelkorS Çekirdek Hatası",
+        "core_error_msg": "MelkorS çekirdek modülü bulunamadı.\nBeklenen konum: {path}",
+        "file_not_found": "Oyun dosyası bulunamadı:",
+        "select_folder_title": "PS5 Oyun Klasörünü Seçin",
+        "eboot_not_found_msg": "Seçilen klasörde 'eboot.bin' bulunamadı!\nPS5 oyunlarının decrypted yapıda olması gerekir.",
+        "copy_game_confirm": "Bu oyunu melkorsps5/games/ dizinine kopyalamak istiyor musunuz?",
+        "folder_copy_error": "Klasör taşınamadı:",
+        "info_title": "Bilgi",
+        "warning_title": "Uyarı",
+        "error_title": "Hata",
+        "success_title": "Başarılı",
+        "select_game_first": "Lütfen önce Kütüphane sekmesinden ayıklanmış/kurulmuş bir oyun seçin.",
+        "modules_verified": "{name} için modül kontrolleri güncellendi.",
+        "settings_saved": "MelkorS PS5 grafik, ses ve performans ayarları kaydedildi.",
+        "ultra_perf_applied_title": "⚡ Ultra Performans Profili",
+        "ultra_perf_applied_msg": (
+            "<b>Ultra Performans Profili başarıyla uygulandı!</b><br><br>"
+            "• <b>Çözünürlük:</b> 720p (Performans Modu)<br>"
+            "• <b>Shader Optimizasyonu:</b> Maksimum Performance Seviyesi<br>"
+            "• <b>Kare Sunumu:</b> Immediate (V-Sync Kapalı / Minimum Gecikme)<br>"
+            "• <b>Boru Hattı Önbelleği:</b> Açık (Hızlı Yükleme)<br><br>"
+            "Oyununuzu şimdi başlatıp yüksek FPS ile oynayabilirsiniz!"
+        ),
+        "pkg_extract_notice_title": "PKG Kurulumu",
+        "pkg_extract_notice_msg": (
+            "Seçilen PKG paketi MelkorS sistemine kurulacak.<br>"
+            "Kurulum MelkorS içinde gerçekleştirilecek.<br>"
+            "İlerlemeyi <b>Canlı Log</b> sekmesinden takip edebilirsin."
+        ),
+        "pkg_extract_missing_core": "MelkorS çekirdek modülü bulunamadı.\nPKG kurulumu için çekirdek gereklidir.",
+        "vibration_test_title": "Titreşim Testi",
+        "vibration_test_success": "Titreşim motorları başarıyla tetiklendi!",
+        "vibration_test_fail": "Bağlı aktif XInput gamepad bulunamadı. Lütfen kolunuzu USB/Bluetooth ile bağlayın."
     },
     "en": {
         "title": "MelkorS PS5 Control Center",
@@ -132,8 +199,8 @@ TRANSLATIONS = {
         "language_label": "Interface Language:",
         "controller_box_title": "Detected Gamepad / Controller",
         "controller_type": "Input API:",
-        "controller_status_connected": "✔ DualSense / XInput Compatible Controller Connected",
-        "controller_status_none": "Scanning for Controllers (XInput / DualSense)...",
+        "controller_status_connected": "✔ DualSense / XInput Compatible Controller Connected (Port {port})",
+        "controller_status_none": "Scanning for Controllers (USB / Bluetooth XInput expected)...",
         "test_vibration": "⚡ Test Vibration & Haptics",
         "deadzone_label": "Analog Stick Deadzone:",
         "rumble_success": "Haptic vibration signal sent!",
@@ -168,6 +235,73 @@ TRANSLATIONS = {
         "patch_scan_complete_msg": "UE5 Engine Scan Successfully Completed!\n\nDetected {count} engine-level crash vectors.\n\nGenerated Patches:\n• {json} (MelkorS / GoldHEN Mod)\n• {xml} (shadPS4 XML Mod)\n\nThese patches will be automatically applied in memory by MelkorS Core during launch.",
         "profile_label": "Autonomous Profile:",
         "vulkan_pipeline_label": "Vulkan Pipeline:",
-        "vulkan_pipeline_status": "🚀 GPL Fast-Link & Disk Cache Active"
+        "vulkan_pipeline_status": "🚀 GPL Fast-Link & Disk Cache Active",
+        "audio_box_title": "🔊 Audio Configuration & Anti-Crackle",
+        "audio_buffer_label": "Audio Buffer Size (Sample Frames):",
+        "audio_priority_label": "⚡ High Process Priority (Prevents Audio & Shader Gaps)",
+        "audio_priority_tooltip": "Elevates emulator process priority on Windows to HIGH to prevent audio threads from starving and crackling.",
+        "patch_box_title": "🩹 Patch Settings",
+        "disable_patch_label": "⛔ Disable Auto-Patch (Try if game fails to start)",
+        "disable_patch_tooltip": "If enabled, MelkorS will not inject automatic patches (--game-patch). Use this if a patch causes conflicts.",
+        "clear_cache_btn": "🗑️ Clear Vulkan Pipeline Cache",
+        "clear_cache_success": "Vulkan pipeline cache (_PipelineCache) successfully cleared.",
+        "mem_retry_msg": "⚠️ Memory Reservation Failed (Windows Commit Limit). Retrying automatically ({attempt}/2)...",
+        "extract_pkg_btn": "📦 Install / Extract PKG",
+        "ctrl_preview_title": "🎮 PlayStation 5 DualSense Controller Layout",
+        "ctrl_preview_text": (
+            "• <b>Triangle:</b> XInput: Y | Action 2 / Secondary / Switch<br>"
+            "• <b>Cross:</b> XInput: A | Confirm / Jump / Interact<br>"
+            "• <b>Circle:</b> XInput: B | Cancel / Crouch / Dodge<br>"
+            "• <b>Square:</b> XInput: X | Primary Action / Attack / Reload<br>"
+            "• <b>L1 / R1:</b> XInput: LB / RB | Left / Right Bumpers (Shoulder Buttons)<br>"
+            "• <b>L2 / R2:</b> XInput: LT / RT | Analog Triggers (Aim & Shoot / Throttle & Brake)<br>"
+            "• <b>L3 / R3:</b> Left / Right Thumbstick Click (Sprint / Melee / Reset Camera)<br>"
+            "• <b>D-Pad & Thumbsticks:</b> Movement, Inventory / Camera Controls<br>"
+            "• <b>Options & Create:</b> Pause / Game Menu and Media Sharing Keys"
+        ),
+        "empty_library": "No games added yet (Place into games/ folder)",
+        "game_ver": "Version:",
+        "game_folder": "Path/Folder:",
+        "game_launching": "▶ Starting MelkorS {core} Core: {name}...",
+        "game_stopped": "Game stopped.",
+        "game_finished_ok": "Game exited successfully.",
+        "game_finished_code": "Game terminated (Exit code: {code}). Check the Log tab for details.",
+        "ready": "Ready.",
+        "library_updating": "🔄 Updating game library...",
+        "pkg_installed_ok": "✅ {name} installed successfully!",
+        "pkg_install_complete": "✅ Installation complete. Library updated.",
+        "core_error_title": "MelkorS Core Error",
+        "core_error_msg": "MelkorS core executable not found.\nExpected location: {path}",
+        "file_not_found": "Game file not found:",
+        "select_folder_title": "Select PS5 Game Directory",
+        "eboot_not_found_msg": "'eboot.bin' not found in selected directory!\nPS5 games must be in decrypted format.",
+        "copy_game_confirm": "Do you want to copy this game to melkorsps5/games/ directory?",
+        "folder_copy_error": "Could not copy directory:",
+        "info_title": "Information",
+        "warning_title": "Warning",
+        "error_title": "Error",
+        "success_title": "Success",
+        "select_game_first": "Please select an installed game from the Library tab first.",
+        "modules_verified": "Module status updated for {name}.",
+        "settings_saved": "MelkorS PS5 graphics, audio, and performance settings saved.",
+        "ultra_perf_applied_title": "⚡ Ultra Performance Profile",
+        "ultra_perf_applied_msg": (
+            "<b>Ultra Performance Profile applied successfully!</b><br><br>"
+            "• <b>Resolution:</b> 720p (Performance Mode)<br>"
+            "• <b>Shader Optimization:</b> Maximum Performance Level<br>"
+            "• <b>Presentation Mode:</b> Immediate (V-Sync Off / Lowest Latency)<br>"
+            "• <b>Pipeline Cache:</b> Enabled (Fast Loading)<br><br>"
+            "You can launch your game now and play with high framerates!"
+        ),
+        "pkg_extract_notice_title": "PKG Installation",
+        "pkg_extract_notice_msg": (
+            "The selected PKG will be installed into MelkorS.<br>"
+            "Installation is processed internally.<br>"
+            "You can monitor the progress on the <b>Live Logs</b> tab."
+        ),
+        "pkg_extract_missing_core": "MelkorS core module not found.\nCore is required for PKG installation.",
+        "vibration_test_title": "Vibration Test",
+        "vibration_test_success": "Haptic rumble motors triggered successfully!",
+        "vibration_test_fail": "No active XInput gamepad found. Please connect your controller via USB or Bluetooth."
     }
 }

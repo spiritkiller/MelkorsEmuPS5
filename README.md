@@ -64,7 +64,7 @@ The following titles have been tested and verified to boot and run on MelkorS PS
 ## 📥 Getting Started & Usage Guide
 
 1. **Download & Extract:**
-   - Grab the latest `MelkorSPS5-v1.5.0-Windows-x64.zip` release from the [Releases](https://github.com/spiritkiller/MelkorsEmuPS5/releases) tab.
+   - Grab the latest `MelkorSPS5-v1.6.0-Windows-x64.zip` release from the [Releases](https://github.com/spiritkiller/MelkorsEmuPS5/releases) tab.
    - Extract the contents to any folder on your computer.
 2. **Add Your Games:**
    - Place your decrypted PS5 or PS4 game folders (or `.pkg` packages) into the `games/` folder:

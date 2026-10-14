@@ -77,7 +77,7 @@
     "volume_slider": 100
   },
   "Input": {
-    "background_controller_input": false,
+    "background_controller_input": true,
     "camera_id": -1,
     "cursor_hide_timeout": 5,
     "cursor_state": 1,

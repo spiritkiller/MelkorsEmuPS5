@@ -149,7 +149,9 @@ class MelkorSWindow(QMainWindow):
             "shader_opt": "Performance",
             "present_mode": "Immediate",
             "vblank_hz": "60",
-            "readback_bypass": True
+            "readback_bypass": True,
+            "audio_buffer": 2048,
+            "high_priority": True
         }
         if os.path.exists(CONFIG_PATH):
             try:
@@ -159,6 +161,7 @@ class MelkorSWindow(QMainWindow):
                 pass
         # Always force engine path to our emulator/ dir
         self.config["emulator_exe"] = CORE_EXE
+        self._sync_core_vulkan_config(self.config.get("pipeline_cache", True))
 
     def save_config(self):
         try:
@@ -302,7 +305,7 @@ class MelkorSWindow(QMainWindow):
         self.btn_launch.setObjectName("primaryBtn")
         self.btn_launch.setFixedHeight(44)
         self.btn_launch.setEnabled(False)
-        self.btn_launch.clicked.connect(self.launch_selected_game)
+        self.btn_launch.clicked.connect(self.on_user_launch_game)
         actions_box.addWidget(self.btn_launch)
 
         self.btn_extract = QPushButton("📦 PKG Paketini Kur / Ayıkla")
@@ -414,29 +417,20 @@ class MelkorSWindow(QMainWindow):
         row_dead.addWidget(self.lbl_deadzone_val)
         c_layout.addLayout(row_dead)
 
-        btn_vibe = QPushButton(self.t["test_vibration"])
-        btn_vibe.setObjectName("primaryBtn")
-        btn_vibe.clicked.connect(self.test_controller_vibration)
-        c_layout.addWidget(btn_vibe)
+        self.btn_vibe = QPushButton(self.t["test_vibration"])
+        self.btn_vibe.setObjectName("primaryBtn")
+        self.btn_vibe.clicked.connect(self.test_controller_vibration)
+        c_layout.addWidget(self.btn_vibe)
 
         layout.addWidget(box_ctrl)
+        self.box_ctrl = box_ctrl
 
-        box_layout_preview = QGroupBox("🎮 PlayStation 5 DualSense Kontrol Şeması (Controller Layout)")
-        prev_layout = QVBoxLayout(box_layout_preview)
-        mapping_desc = QLabel(
-            "• <b>Kare (Square):</b> XInput: X | Eylem 1 (Action 1 / Attack / Reload)<br>"
-            "• <b>Üçgen (Triangle):</b> XInput: Y | Eylem 2 (Action 2 / Secondary / Switch)<br>"
-            "• <b>Çarpı (Cross):</b> XInput: A | Onay / Zıplama / Etkileşim (Confirm / Jump / Interact)<br>"
-            "• <b>Daire (Circle):</b> XInput: B | İptal / Eğilme / Kaçınma (Cancel / Crouch / Dodge)<br>"
-            "• <b>L1 / R1:</b> XInput: LB / RB | Sol / Sağ Üst Tamponlar (Bumper / Shoulder Buttons)<br>"
-            "• <b>L2 / R2:</b> XInput: LT / RT | Analog Tetikler (Nişan Alma & Ateş / Gaz & Fren)<br>"
-            "• <b>L3 / R3:</b> Sol / Sağ Analog Tıklama (Sprint / Yakın Dövüş / Kamera Sıfırlama)<br>"
-            "• <b>D-Pad & Analoglar:</b> Yön Tuşları, Envanter / Karakter Hareketi ve Kamera Kontrolü<br>"
-            "• <b>Options & Create:</b> Duraklat / Oyun Menüsü ve Paylaşım Tuşları"
-        )
-        mapping_desc.setStyleSheet("color: #c9d1d9; line-height: 1.6;")
-        prev_layout.addWidget(mapping_desc)
-        layout.addWidget(box_layout_preview)
+        self.box_layout_preview = QGroupBox(self.t.get("ctrl_preview_title", "🎮 PlayStation 5 DualSense Kontrol Şeması"))
+        prev_layout = QVBoxLayout(self.box_layout_preview)
+        self.mapping_desc = QLabel(self.t.get("ctrl_preview_text", ""))
+        self.mapping_desc.setStyleSheet("color: #c9d1d9; line-height: 1.6;")
+        prev_layout.addWidget(self.mapping_desc)
+        layout.addWidget(self.box_layout_preview)
 
         layout.addStretch()
 
@@ -475,9 +469,11 @@ class MelkorSWindow(QMainWindow):
 
         self.box_gfx = QGroupBox(self.t["gfx_box_title"])
         box_layout = QVBoxLayout(self.box_gfx)
+        box_layout.setSpacing(10)
 
         row_res = QHBoxLayout()
-        row_res.addWidget(QLabel(self.t["res_label"]))
+        self.lbl_res = QLabel(self.t["res_label"])
+        row_res.addWidget(self.lbl_res)
         self.combo_res = QComboBox()
         self.combo_res.addItems(["720p (Performans)", "1080p (Native)", "1440p (2K)", "2160p (4K UHD)"])
         self.combo_res.setCurrentText(self.config.get("resolution", "1080p (Native)"))
@@ -486,7 +482,8 @@ class MelkorSWindow(QMainWindow):
 
         # Shader Optimization Level
         row_shader = QHBoxLayout()
-        row_shader.addWidget(QLabel(self.t["shader_opt_label"]))
+        self.lbl_shader = QLabel(self.t["shader_opt_label"])
+        row_shader.addWidget(self.lbl_shader)
         self.combo_shader_opt = QComboBox()
         self.combo_shader_opt.addItems(["Performance (Maksimum FPS)", "Size (Dengeli)", "None (Kapalı)"])
         cur_opt = self.config.get("shader_opt", "Performance")
@@ -501,7 +498,8 @@ class MelkorSWindow(QMainWindow):
 
         # Present Mode
         row_present = QHBoxLayout()
-        row_present.addWidget(QLabel(self.t["present_mode_label"]))
+        self.lbl_present = QLabel(self.t["present_mode_label"])
+        row_present.addWidget(self.lbl_present)
         self.combo_present_mode = QComboBox()
         self.combo_present_mode.addItems([
             "Immediate (V-Sync Kapalı / En Yüksek FPS)",
@@ -520,7 +518,8 @@ class MelkorSWindow(QMainWindow):
 
         # VBlank / Refresh Rate
         row_vblank = QHBoxLayout()
-        row_vblank.addWidget(QLabel(self.t["vblank_label"]))
+        self.lbl_vblank = QLabel(self.t["vblank_label"])
+        row_vblank.addWidget(self.lbl_vblank)
         self.combo_vblank = QComboBox()
         self.combo_vblank.addItems(["60 Hz (Standart)", "120 Hz (Yüksek Akıcılık)", "144 Hz (Pro)", "30 Hz (Tasarruf)"])
         cur_vblank = str(self.config.get("vblank_hz", "60"))
@@ -538,20 +537,86 @@ class MelkorSWindow(QMainWindow):
         self.chk_vsync.setChecked(self.config.get("vsync", False))
         box_layout.addWidget(self.chk_vsync)
 
+        row_cache = QHBoxLayout()
         self.chk_cache = QCheckBox(self.t["shader_cache"])
         self.chk_cache.setChecked(self.config.get("pipeline_cache", True))
-        box_layout.addWidget(self.chk_cache)
+        row_cache.addWidget(self.chk_cache)
+
+        self.btn_clear_cache = QPushButton(self.t.get("clear_cache_btn", "🗑️ Vulkan Önbelleğini Temizle"))
+        self.btn_clear_cache.setStyleSheet(
+            "background: #21262d; color: #f85149; border: 1px solid #30363d; border-radius: 4px; padding: 4px 8px; font-weight: bold; font-size: 11px;"
+        )
+        self.btn_clear_cache.clicked.connect(self.clear_pipeline_cache)
+        row_cache.addWidget(self.btn_clear_cache)
+        box_layout.addLayout(row_cache)
 
         # 1-Click Ultra Performance Profile button
         self.btn_ultra_perf = QPushButton(self.t["ultra_perf_btn"])
+        self.btn_ultra_perf.setObjectName("ultraPerfBtn")
+        self.btn_ultra_perf.setFixedHeight(44)
         self.btn_ultra_perf.setStyleSheet(
-            "background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #ff4500, stop:1 #ff8c00);"
-            "color: white; font-weight: bold; font-size: 13px; padding: 10px; border-radius: 6px; margin: 6px 0;"
+            "QPushButton#ultraPerfBtn {"
+            "  background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #d84315, stop:1 #f57c00);"
+            "  color: #ffffff;"
+            "  font-family: 'Segoe UI', Arial, sans-serif;"
+            "  font-weight: 800;"
+            "  font-size: 13px;"
+            "  border: 1px solid #ff8a65;"
+            "  border-radius: 6px;"
+            "  padding: 0 16px;"
+            "  margin-top: 6px;"
+            "}"
+            "QPushButton#ultraPerfBtn:hover {"
+            "  background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #e64a19, stop:1 #fb8c00);"
+            "  border-color: #ffab91;"
+            "}"
+            "QPushButton#ultraPerfBtn:pressed {"
+            "  background: #bf360c;"
+            "}"
         )
         self.btn_ultra_perf.clicked.connect(self.apply_ultra_performance_preset)
         box_layout.addWidget(self.btn_ultra_perf)
 
         layout.addWidget(self.box_gfx)
+
+        # --- Audio & Anti-Crackle Settings ---
+        self.box_audio = QGroupBox(self.t.get("audio_box_title", "🔊 Ses Yapılandırması & Cızırtı Önleyici"))
+        audio_layout = QVBoxLayout(self.box_audio)
+
+        row_buf = QHBoxLayout()
+        self.lbl_audio_buffer = QLabel(self.t.get("audio_buffer_label", "Ses Tampon Boyutu (Buffer):"))
+        row_buf.addWidget(self.lbl_audio_buffer)
+        self.combo_audio_buffer = QComboBox()
+        self.combo_audio_buffer.addItems([
+            "2048 Frames (Önerilen - Cızırtı Önleyici / Anti-Crackle)",
+            "1024 Frames (Standart / Düşük Gecikme)",
+            "4096 Frames (Ultra Tampon / Zayıf Donanım)"
+        ])
+        cur_buf = str(self.config.get("audio_buffer", "2048"))
+        buf_idx = {"2048": 0, "1024": 1, "4096": 2}.get(cur_buf, 0)
+        self.combo_audio_buffer.setCurrentIndex(buf_idx)
+        row_buf.addWidget(self.combo_audio_buffer)
+        audio_layout.addLayout(row_buf)
+
+        self.chk_high_priority = QCheckBox(self.t.get("audio_priority_label", "⚡ Yüksek İşlem Önceliği (Ses ve shader takılmalarını engeller)"))
+        self.chk_high_priority.setToolTip(self.t.get("audio_priority_tooltip", ""))
+        self.chk_high_priority.setChecked(self.config.get("high_priority", True))
+        self.chk_high_priority.setStyleSheet("color: #7ee787; font-weight: bold;")
+        audio_layout.addWidget(self.chk_high_priority)
+
+        layout.addWidget(self.box_audio)
+
+        # --- Patch Settings ---
+        self.box_patch = QGroupBox(self.t.get("patch_box_title", "🩹 Yama Ayarları"))
+        patch_layout = QVBoxLayout(self.box_patch)
+
+        self.chk_disable_patch = QCheckBox(self.t.get("disable_patch_label", "⛔ Otomatik Yamayı Kapat"))
+        self.chk_disable_patch.setToolTip(self.t.get("disable_patch_tooltip", ""))
+        self.chk_disable_patch.setChecked(self.config.get("disable_auto_patch", False))
+        self.chk_disable_patch.setStyleSheet("color: #f85149; font-weight: bold;")
+        patch_layout.addWidget(self.chk_disable_patch)
+
+        layout.addWidget(self.box_patch)
 
         self.btn_save = QPushButton(self.t["save_settings"])
         self.btn_save.setObjectName("primaryBtn")
@@ -621,12 +686,15 @@ class MelkorSWindow(QMainWindow):
         self.tabs.setTabText(1, self.t["tab_controller"])
         self.tabs.setTabText(2, self.t["tab_settings"])
         self.tabs.setTabText(3, self.t["tab_debug"])
+        self.tabs.setTabText(4, self.t["tab_modules"])
 
         self.btn_refresh.setText(self.t["refresh_lib"])
         self.btn_add.setText(self.t["scan_folder"])
         self.btn_open_games.setText(self.t["open_games"])
         self.btn_launch.setText(self.t["launch_game"])
         self.btn_stop.setText(self.t["stop_game"])
+        if hasattr(self, "btn_extract"):
+            self.btn_extract.setText(self.t.get("extract_pkg_btn", "📦 PKG Paketini Kur / Ayıkla"))
         self.btn_auto_patch.setText(self.t["auto_patch_btn"])
         self.btn_auto_patch.setToolTip(self.t["auto_patch_tooltip"])
         self.btn_remove_patch.setText(self.t["remove_patch_btn"])
@@ -637,24 +705,65 @@ class MelkorSWindow(QMainWindow):
         self.btn_save.setText(self.t["save_settings"])
         self.btn_check_modules.setText(self.t["verify_modules"])
 
+        # Engine & Graphics
         self.box_engine.setTitle(self.t["core_box_title"])
         self.lbl_arch.setText(self.t["arch_val"])
         self.lbl_gpu_drv.setText(self.t["gpu_val"])
         self.chk_jit.setText(self.t["jit_opt"])
         self.chk_verbose.setText(self.t["verbose_opt"])
+
         self.box_gfx.setTitle(self.t["gfx_box_title"])
+        if hasattr(self, "lbl_res"): self.lbl_res.setText(self.t["res_label"])
+        if hasattr(self, "lbl_shader"): self.lbl_shader.setText(self.t["shader_opt_label"])
+        if hasattr(self, "lbl_present"): self.lbl_present.setText(self.t["present_mode_label"])
+        if hasattr(self, "lbl_vblank"): self.lbl_vblank.setText(self.t["vblank_label"])
+        self.chk_readback.setText(self.t["readback_bypass"])
         self.chk_vsync.setText(self.t["vsync"])
         self.chk_cache.setText(self.t["shader_cache"])
+        if hasattr(self, "btn_clear_cache"):
+            self.btn_clear_cache.setText(self.t.get("clear_cache_btn", "🗑️ Vulkan Önbelleğini Temizle"))
+        self.btn_ultra_perf.setText(self.t["ultra_perf_btn"])
+
+        # Audio Box
+        if hasattr(self, "box_audio"): self.box_audio.setTitle(self.t["audio_box_title"])
+        if hasattr(self, "lbl_audio_buffer"): self.lbl_audio_buffer.setText(self.t["audio_buffer_label"])
+        if hasattr(self, "chk_high_priority"):
+            self.chk_high_priority.setText(self.t["audio_priority_label"])
+            self.chk_high_priority.setToolTip(self.t["audio_priority_tooltip"])
+
+        # Patch Box
+        if hasattr(self, "box_patch"): self.box_patch.setTitle(self.t["patch_box_title"])
+        if hasattr(self, "chk_disable_patch"):
+            self.chk_disable_patch.setText(self.t["disable_patch_label"])
+            self.chk_disable_patch.setToolTip(self.t["disable_patch_tooltip"])
+
+        # Modules Box
         self.box_modules.setTitle(self.t["module_box_title"])
         self.lbl_desc_modules.setText(self.t["module_desc"])
+
+        # Controller Tab
+        if hasattr(self, "box_ctrl"): self.box_ctrl.setTitle(self.t["controller_box_title"])
+        if hasattr(self, "btn_vibe"): self.btn_vibe.setText(self.t["test_vibration"])
+        if hasattr(self, "box_layout_preview"): self.box_layout_preview.setTitle(self.t["ctrl_preview_title"])
+        if hasattr(self, "mapping_desc"): self.mapping_desc.setText(self.t["ctrl_preview_text"])
+        self.refresh_controller_status()
+
+        # Debug Tab
+        if hasattr(self, "lbl_filter"): self.lbl_filter.setText(self.t["filter"])
+        if hasattr(self, "combo_filter"):
+            self.combo_filter.setItemText(0, self.t["filter_all"])
+            self.combo_filter.setItemText(1, self.t["filter_err"])
+            self.combo_filter.setItemText(2, self.t["filter_warn"])
+            self.combo_filter.setItemText(3, self.t["filter_gpu"])
+            self.combo_filter.setItemText(4, self.t["filter_sys"])
 
     def refresh_controller_status(self):
         connected = self.controller_mgr.get_connected_controllers()
         if connected:
-            self.lbl_ctrl_status.setText(f"✔ DualSense / XInput Uyumlu Kontrollör Bağlı (Port {connected[0]})")
+            self.lbl_ctrl_status.setText(self.t.get("controller_status_connected", "✔ DualSense / XInput Connected (Port {port})").format(port=connected[0]))
             self.lbl_ctrl_status.setStyleSheet("color: #58a6ff; font-weight: bold; font-size: 14px;")
         else:
-            self.lbl_ctrl_status.setText("Oyun Kolu Aranıyor (USB / Bluetooth XInput bekleniyor)...")
+            self.lbl_ctrl_status.setText(self.t.get("controller_status_none", "Oyun Kolu Aranıyor..."))
             self.lbl_ctrl_status.setStyleSheet("color: #7a889b; font-weight: bold; font-size: 14px;")
 
     def on_deadzone_changed(self, value):
@@ -665,16 +774,16 @@ class MelkorSWindow(QMainWindow):
     def test_controller_vibration(self):
         ok = self.controller_mgr.test_vibration(0, 600)
         if ok:
-            QMessageBox.information(self, "Titreşim Testi", "Titreşim motorları başarıyla tetiklendi!")
+            QMessageBox.information(self, self.t.get("vibration_test_title", "Titreşim Testi"), self.t.get("vibration_test_success", "Titreşim motorları başarıyla tetiklendi!"))
         else:
-            QMessageBox.warning(self, "Uyarı", "Bağlı aktif XInput gamepad bulunamadı. Lütfen kolunuzu USB/Bluetooth ile bağlayın.")
+            QMessageBox.warning(self, self.t.get("warning_title", "Uyarı"), self.t.get("vibration_test_fail", "Bağlı aktif XInput gamepad bulunamadı."))
 
     def refresh_games(self):
         self.games_list.clear()
         games = self.scanner.scan()
 
         if not games:
-            item = QListWidgetItem("Henüz oyun eklenmedi (games/ klasörüne atın)")
+            item = QListWidgetItem(self.t.get("empty_library", "Henüz oyun eklenmedi (games/ klasörüne atın)"))
             item.setFlags(item.flags() & ~Qt.ItemFlag.ItemIsEnabled)
             self.games_list.addItem(item)
             self.btn_launch.setEnabled(False)
@@ -724,10 +833,12 @@ class MelkorSWindow(QMainWindow):
             patch_status_html = f"<br><b>{self.t.get('patch_label', 'Yama Durumu:')}</b> <span style='color: #8b949e;'>{self.t.get('patch_status_none', 'Yama yok')}</span>"
 
         core_badge = "PS5 Core (Native)" if profile.core == "ps5" else "PS4 Core (Vulkan)"
+        engine_label = "Engine" if self.lang == "en" else "Motor"
+        status_label = "Status:" if self.lang == "en" else "Durum:"
         profile_html = (
             f"<br><b>{self.t.get('profile_label', 'Otonom Profil:')}</b> "
             f"<span style='color: #58a6ff; font-weight: bold;'>{core_badge}</span> "
-            f"| Motor: <span style='color: #e3b341;'>{profile.engine}</span> "
+            f"| {engine_label}: <span style='color: #e3b341;'>{profile.engine}</span> "
             f"| Shader: <span style='color: #7ee787;'>{profile.shader_opt}</span>"
         )
         vulkan_html = f"<br><b>{self.t.get('vulkan_pipeline_label', 'Vulkan Pipeline:')}</b> <span style='color: #58a6ff;'>{self.t.get('vulkan_pipeline_status', '🚀 GPL Fast-Link & Disk Önbelleği Devrede')}</span>"
@@ -735,12 +846,12 @@ class MelkorSWindow(QMainWindow):
         status_color = "#58a6ff" if (game.has_fakelib or game.is_pkg) else "#f85149"
         info_text = (
             f"<b>Title ID:</b> {game.title_id}<br>"
-            f"<b>Sürüm:</b> {game.version}<br>"
-            f"<b>Durum:</b> <span style='color: {status_color}; font-weight: bold;'>{game.status}</span>"
+            f"<b>{self.t.get('game_ver', 'Sürüm:')}</b> {game.version}<br>"
+            f"<b>{status_label}</b> <span style='color: {status_color}; font-weight: bold;'>{game.status}</span>"
             f"{profile_html}"
             f"{patch_status_html}"
             f"{vulkan_html}<br>"
-            f"<b>Dosya/Klasör:</b> {game.folder_path}"
+            f"<b>{self.t.get('game_folder', 'Dosya/Klasör:')}</b> {game.folder_path}"
         )
         self.detail_info.setText(info_text)
 
@@ -851,16 +962,13 @@ class MelkorSWindow(QMainWindow):
         pkg_path = self.selected_game.folder_path
 
         if not os.path.exists(CORE_EXE):
-            QMessageBox.critical(self, "Hata",
-                                 "MelkorS çekirdek modülü bulunamadı.\n"
-                                 f"Beklenen konum: {CORE_EXE}")
+            QMessageBox.critical(self, self.t.get("error_title", "Hata"),
+                                 self.t.get("pkg_extract_missing_core", f"MelkorS çekirdek modülü bulunamadı.\nBeklenen konum: {CORE_EXE}"))
             return
 
         reply = QMessageBox.question(
-            self, "PKG Kurulum",
-            f"<b>{self.selected_game.title_name}</b> kurulsun mu?<br><br>"
-            f"Kurulum MelkorS içinde gerçekleştirilecek.<br>"
-            f"İlerlemeyi <b>Canlı Log</b> sekmesinden takip edebilirsin.",
+            self, self.t.get("pkg_extract_notice_title", "PKG Kurulum"),
+            f"<b>{self.selected_game.title_name}</b><br><br>{self.t.get('pkg_extract_notice_msg', 'Kurulum MelkorS içinde gerçekleştirilecek.')}",
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
         if reply == QMessageBox.StandardButton.No:
@@ -868,7 +976,8 @@ class MelkorSWindow(QMainWindow):
 
         # Switch to log tab so user can watch installation progress
         self.tabs.setCurrentWidget(self.tab_debug)
-        self.status_msg.setText(f"⚙️ {self.selected_game.title_name} kuruluyor...")
+        installing_text = "Installing" if self.lang == "en" else "kuruluyor"
+        self.status_msg.setText(f"⚙️ {self.selected_game.title_name} ({installing_text})...")
         self.btn_extract.setEnabled(False)
         self.btn_launch.setEnabled(False)
         self.btn_stop.setEnabled(True)
@@ -879,94 +988,105 @@ class MelkorSWindow(QMainWindow):
     def _on_installer_finished(self, exit_code: int):
         """Called when PKG install process completes (via on_process_finished)."""
         self.btn_extract.setEnabled(True)
-        self.status_msg.setText("🔄 Oyun kütüphanesi güncelleniyor...")
+        self.status_msg.setText(self.t.get("library_updating", "🔄 Oyun kütüphanesi güncelleniyor..."))
         self.refresh_games()
         if self.selected_game:
             for i in range(self.games_list.count()):
                 item = self.games_list.item(i)
                 g = item.data(Qt.ItemDataRole.UserRole)
                 if g and g.title_id == self.selected_game.title_id and not g.is_pkg:
-                    self.status_msg.setText(f"✅ {g.title_name} başarıyla kuruldu!")
+                    self.status_msg.setText(self.t.get("pkg_installed_ok", "✅ {name} başarıyla kuruldu!").format(name=g.title_name))
                     return
-        self.status_msg.setText("✅ Kurulum tamamlandı. Kütüphane güncellendi.")
+        self.status_msg.setText(self.t.get("pkg_install_complete", "✅ Kurulum tamamlandı. Kütüphane güncellendi."))
 
     def update_modules_tab_for_game(self, game: PS5Game):
         if game.is_pkg:
             return
         fakelib_dir = os.path.join(game.folder_path, "fakelib")
+        ok_txt = "✔ INSTALLED" if self.lang == "en" else "✔ MEVCUT"
+        miss_txt = "✖ MISSING" if self.lang == "en" else "✖ EKSİK"
         for mod_name, label in self.module_labels.items():
             mod_path = os.path.join(fakelib_dir, mod_name)
             if os.path.exists(mod_path):
-                label.setText("✔ MEVCUT")
+                label.setText(ok_txt)
                 label.setStyleSheet("color: #58a6ff; font-weight: bold;")
             else:
-                label.setText("✖ EKSİK")
+                label.setText(miss_txt)
                 label.setStyleSheet("color: #f85149; font-weight: bold;")
 
     def verify_and_repair_modules(self):
         if not self.selected_game or self.selected_game.is_pkg:
-            QMessageBox.information(self, "Bilgi", "Lütfen önce Kütüphane sekmesinden ayıklanmış/kurulmuş bir oyun seçin.")
+            QMessageBox.information(self, self.t.get("info_title", "Bilgi"), self.t.get("select_game_first", "Lütfen önce Kütüphane sekmesinden ayıklanmış/kurulmuş bir oyun seçin."))
             return
 
         fakelib_dir = os.path.join(self.selected_game.folder_path, "fakelib")
         os.makedirs(fakelib_dir, exist_ok=True)
         self.update_modules_tab_for_game(self.selected_game)
-        QMessageBox.information(self, "Doğrulama", f"{self.selected_game.title_name} için modül kontrolleri güncellendi.")
+        QMessageBox.information(self, self.t.get("info_title", "Doğrulama"), self.t.get("modules_verified", "{name} için modül kontrolleri güncellendi.").format(name=self.selected_game.title_name))
 
     def import_game_folder(self):
-        folder = QFileDialog.getExistingDirectory(self, "PS5 Oyun Klasörünü Seçin", BASE_DIR)
+        folder = QFileDialog.getExistingDirectory(self, self.t.get("select_folder_title", "PS5 Oyun Klasörünü Seçin"), BASE_DIR)
         if folder:
             eboot = os.path.join(folder, "eboot.bin")
             if not os.path.exists(eboot):
-                QMessageBox.warning(self, "Uyarı", "Seçilen klasörde 'eboot.bin' bulunamadı!\nPS5 oyunlarının decrypted yapıda olması gerekir.")
+                QMessageBox.warning(self, self.t.get("warning_title", "Uyarı"), self.t.get("eboot_not_found_msg", "Seçilen klasörde 'eboot.bin' bulunamadı!\nPS5 oyunlarının decrypted yapıda olması gerekir."))
                 return
 
             dest_folder = os.path.join(GAMES_DIR, os.path.basename(folder))
             if not os.path.exists(dest_folder):
                 try:
                     reply = QMessageBox.question(
-                        self, "Oyun Ekle",
-                        f"Bu oyunu melkorsps5/games/ dizinine kopyalamak istiyor musunuz?",
+                        self, self.t.get("scan_folder", "Oyun Ekle"),
+                        self.t.get("copy_game_confirm", "Bu oyunu melkorsps5/games/ dizinine kopyalamak istiyor musunuz?"),
                         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
                     )
                     if reply == QMessageBox.StandardButton.Yes:
                         shutil.copytree(folder, dest_folder)
                 except Exception as e:
-                    QMessageBox.critical(self, "Hata", f"Klasör taşınamadı: {e}")
+                    QMessageBox.critical(self, self.t.get("error_title", "Hata"), f"{self.t.get('folder_copy_error', 'Klasör taşınamadı:')} {e}")
 
             self.refresh_games()
+
+    def on_user_launch_game(self):
+        self._retry_321_count = 0
+        self.launch_selected_game()
 
     def launch_selected_game(self):
         if not self.selected_game or self.selected_game.is_pkg:
             return
 
         title_id = getattr(self.selected_game, "title_id", "")
-        from game_db import GameDB
-        gdb = GameDB()
-        profile = gdb.get_profile(title_id, eboot_path=self.selected_game.eboot_path, title_name=self.selected_game.title_name)
+        try:
+            from game_db import GameDB
+            gdb = GameDB()
+            profile = gdb.get_profile(title_id, eboot_path=self.selected_game.eboot_path, title_name=self.selected_game.title_name)
+            is_ps5 = (profile.core == "ps5")
+        except Exception:
+            # Fallback: assume PS5
+            is_ps5 = True
 
         # Autonomous core selection based on GameDB profile
-        is_ps5 = (profile.core == "ps5")
         target_core = PS5_CORE_EXE if is_ps5 else PS4_CORE_EXE
         if not os.path.exists(target_core):
             target_core = CORE_EXE
 
         if not os.path.exists(target_core):
             QMessageBox.critical(
-                self, "MelkorS Çekirdek Hatası",
-                f"MelkorS çekirdek modülü bulunamadı.\nBeklenen konum: {target_core}"
+                self, self.t.get("core_error_title", "MelkorS Çekirdek Hatası"),
+                self.t.get("core_error_msg", "MelkorS çekirdek modülü bulunamadı.\nBeklenen konum: {path}").format(path=target_core)
             )
             return
 
         eboot = self.selected_game.eboot_path
         if not os.path.exists(eboot):
-            QMessageBox.critical(self, "Hata", f"Oyun dosyası bulunamadı:\n{eboot}")
+            QMessageBox.critical(self, self.t.get("error_title", "Hata"), f"{self.t.get('file_not_found', 'Oyun dosyası bulunamadı:')}\n{eboot}")
             return
 
         target_path = self.selected_game.folder_path if (is_ps5 and os.path.isdir(self.selected_game.folder_path)) else eboot
 
         core_type = "PS5" if is_ps5 else "PS4"
-        self.status_msg.setText(f"▶ MelkorS {core_type} Çekirdeği başlatılıyor: {self.selected_game.title_name}...")
+        launch_msg = self.t.get("game_launching", "▶ MelkorS {core} Çekirdeği başlatılıyor: {name}...").format(core=core_type, name=self.selected_game.title_name)
+        self.status_msg.setText(launch_msg)
         self.btn_launch.setEnabled(False)
         self.btn_stop.setEnabled(True)
 
@@ -999,12 +1119,23 @@ class MelkorSWindow(QMainWindow):
             if self.config.get("readback_bypass", True):
                 extra_args.extend(["--readback-linear-images", "false"])
 
-        self.runner.start_game(target_core, target_path, is_ps5=is_ps5, extra_args=extra_args)
+        disable_patch = self.config.get("disable_auto_patch", False)
+        audio_buf = self.config.get("audio_buffer", getattr(profile, "audio_buffer", 2048))
+        hi_prio = self.config.get("high_priority", True)
+        self.runner.start_game(
+            target_core,
+            target_path,
+            is_ps5=is_ps5,
+            extra_args=extra_args,
+            disable_auto_patch=disable_patch,
+            audio_buffer=audio_buf,
+            high_priority=hi_prio
+        )
 
     def stop_current_game(self):
         self._user_stopped_game = True
         self.runner.stop_game()
-        self.status_msg.setText("Oyun durduruldu.")
+        self.status_msg.setText(self.t.get("game_stopped", "Oyun durduruldu."))
         self.btn_launch.setEnabled(True)
         self.btn_stop.setEnabled(False)
         # Safety watchdog: if finished signal doesn't fire in 3s, reset UI manually
@@ -1015,8 +1146,8 @@ class MelkorSWindow(QMainWindow):
         if not self.runner.is_running():
             # Process is gone — make sure UI is clean
             self.overlay.stop_tracking()
-            if "Çalışıyor" in self.status_msg.text() or "başlatılıyor" in self.status_msg.text():
-                self.status_msg.setText("Hazır.")
+            if any(k in self.status_msg.text() for k in ("Çalışıyor", "başlatılıyor", "Running", "Starting")):
+                self.status_msg.setText(self.t.get("ready", "Hazır."))
             self.btn_launch.setEnabled(True)
             self.btn_stop.setEnabled(False)
 
@@ -1037,10 +1168,26 @@ class MelkorSWindow(QMainWindow):
 
     def on_process_finished(self, exit_code: int):
         self.overlay.stop_tracking()
+
+        # Handle Exit Code 321 (Windows Commit / Paging File expansion latency on first click)
+        if exit_code == 321 and not self._user_stopped_game:
+            retry_count = getattr(self, "_retry_321_count", 0)
+            if retry_count < 2:
+                self._retry_321_count = retry_count + 1
+                msg = self.t.get("mem_retry_msg", "⚠️ Bellek Rezerve Edilemedi (Windows Commit Limit). Otomatik tekrar deneniyor ({attempt}/2)...").format(attempt=self._retry_321_count)
+                self.status_msg.setText(msg)
+                self.all_log_lines.append((f"[MelkorS] {msg}", "WARN"))
+                self.btn_launch.setEnabled(False)
+                self.btn_stop.setEnabled(True)
+                QTimer.singleShot(800, self.launch_selected_game)
+                return
+
+        self._retry_321_count = 0
+
         if exit_code == 0:
-            self.status_msg.setText("Oyun başarıyla tamamlandı.")
+            self.status_msg.setText(self.t.get("game_finished_ok", "Oyun başarıyla tamamlandı."))
         else:
-            self.status_msg.setText(f"Oyun sonlandı (Çıkış kodu: {exit_code}). Log sekmesinden detayları görebilirsiniz.")
+            self.status_msg.setText(self.t.get("game_finished_code", "Oyun sonlandı (Çıkış kodu: {code}).").format(code=exit_code))
         self.btn_launch.setEnabled(True)
         self.btn_stop.setEnabled(False)
         self.btn_extract.setEnabled(True)
@@ -1136,6 +1283,7 @@ class MelkorSWindow(QMainWindow):
         self.config["resolution"] = self.combo_res.currentText()
         self.config["vsync"] = self.chk_vsync.isChecked()
         self.config["pipeline_cache"] = self.chk_cache.isChecked()
+        self._sync_core_vulkan_config(self.chk_cache.isChecked())
         self.config["verbose_logging"] = self.chk_verbose.isChecked()
         self.config["jit_optimization"] = self.chk_jit.isChecked()
 
@@ -1152,9 +1300,47 @@ class MelkorSWindow(QMainWindow):
         self.config["vblank_hz"] = vblank_map.get(self.combo_vblank.currentIndex(), "60")
 
         self.config["readback_bypass"] = self.chk_readback.isChecked()
+        self.config["disable_auto_patch"] = self.chk_disable_patch.isChecked()
+
+        buf_map = {0: 2048, 1: 1024, 2: 4096}
+        self.config["audio_buffer"] = buf_map.get(self.combo_audio_buffer.currentIndex(), 2048)
+        self.config["high_priority"] = self.chk_high_priority.isChecked()
 
         self.save_config()
-        QMessageBox.information(self, "Başarılı", "MelkorS PS5 grafik ve performans ayarları kaydedildi.")
+        QMessageBox.information(self, self.t.get("success_title", "Başarılı"), self.t.get("settings_saved", "MelkorS PS5 grafik, ses ve performans ayarları kaydedildi."))
+
+    def _sync_core_vulkan_config(self, enabled: bool):
+        core_cfg_path = os.path.join(DATA_DIR, "config.json")
+        if os.path.exists(core_cfg_path):
+            try:
+                with open(core_cfg_path, "r", encoding="utf-8") as f:
+                    cfg = json.load(f)
+                if "Vulkan" not in cfg:
+                    cfg["Vulkan"] = {}
+                cfg["Vulkan"]["pipeline_cache_enabled"] = enabled
+                cfg["Vulkan"]["pipeline_cache_archived"] = enabled
+                with open(core_cfg_path, "w", encoding="utf-8") as f:
+                    json.dump(cfg, f, indent=2)
+            except Exception as e:
+                print(f"[MelkorS] data/config.json sync error: {e}")
+
+    def clear_pipeline_cache(self):
+        cache_dir = os.path.join(EMULATOR_DIR, "_PipelineCache")
+        count = 0
+        if os.path.exists(cache_dir):
+            for f in os.listdir(cache_dir):
+                fp = os.path.join(cache_dir, f)
+                try:
+                    if os.path.isfile(fp):
+                        os.remove(fp)
+                        count += 1
+                except Exception:
+                    pass
+        QMessageBox.information(
+            self,
+            self.t.get("info_title", "Bilgi"),
+            f"{self.t.get('clear_cache_success', 'Vulkan boru hattı önbelleği temizlendi.')} ({count} dosya/files)"
+        )
 
     def apply_ultra_performance_preset(self):
         """1-Click apply the fastest possible profile for low-end / high-FPS setups."""
@@ -1167,14 +1353,8 @@ class MelkorSWindow(QMainWindow):
         self.chk_cache.setChecked(True)                # Shader cache on
         self.on_save_settings_clicked()
         QMessageBox.information(
-            self, "⚡ Ultra Performans Profili",
-            "<b>Ultra Performans Profili başarıyla uygulandı!</b><br><br>"
-            "• <b>Çözünürlük:</b> 720p (Performans Modu)<br>"
-            "• <b>Shader Optimizasyonu:</b> Maksimum Performance Seviyesi<br>"
-            "• <b>Kare Sunumu:</b> Immediate (V-Sync Kapalı / Minimum Gecikme)<br>"
-            "• <b>GPU Geri Okuma:</b> Readback Bypass Etkin (Async)<br>"
-            "• <b>Boru Hattı Önbelleği:</b> Açık (Hızlı Yükleme)<br><br>"
-            "Oyununuzu şimdi başlatıp yüksek FPS ile oynayabilirsiniz!"
+            self, self.t.get("ultra_perf_applied_title", "⚡ Ultra Performans Profili"),
+            self.t.get("ultra_perf_applied_msg", "Ultra Performans Profili başarıyla uygulandı!")
         )
 
     def update_telemetry(self):

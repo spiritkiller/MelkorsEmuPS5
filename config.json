@@ -11,5 +11,8 @@
     "shader_opt": "Performance",
     "present_mode": "Immediate",
     "vblank_hz": "120",
-    "readback_bypass": true
+    "readback_bypass": true,
+    "audio_buffer": 4096,
+    "high_priority": true,
+    "disable_auto_patch": false
 }

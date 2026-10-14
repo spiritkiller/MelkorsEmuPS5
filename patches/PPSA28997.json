@@ -1,0 +1,2109 @@
+{
+  "name": "UE5 Auto-Patches for PPSA28997",
+  "id": "PPSA28997",
+  "version": "01.008.001",
+  "process": "eboot.bin",
+  "mods": [
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x5721C)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x5721C",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x5A751)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x5A751",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x5ADFD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x5ADFD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x5B15D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x5B15D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x5B4BD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x5B4BD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x5B81D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x5B81D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x5B9AD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x5B9AD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x5C02D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x5C02D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x5C6CD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x5C6CD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x5CE5D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x5CE5D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x5D06D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x5D06D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x6A48D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x6A48D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x6A68D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x6A68D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x6A83D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x6A83D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x7110D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x7110D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x753D2)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x753D2",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x78BCD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x78BCD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x84543)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x84543",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x8511D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x8511D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x8571D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x8571D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x858CD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x858CD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x85A7D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x85A7D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x8604D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x8604D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x89B8D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x89B8D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x8D33D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x8D33D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x8D62D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x8D62D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x8D85D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x8D85D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xAC0DD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xAC0DD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xAC20D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xAC20D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xAC33D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xAC33D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xAD4FD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xAD4FD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xB1C4D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xB1C4D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xB1EBD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xB1EBD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xB26FD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xB26FD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xB4AFD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xB4AFD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xB4C7D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xB4C7D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xB4E0D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xB4E0D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xB611D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xB611D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xBD1CD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xBD1CD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xD3F3D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xD3F3D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xD43FD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xD43FD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xEB62D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xEB62D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xEBE2D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xEBE2D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xEC62D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xEC62D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xECEDD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xECEDD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xED78D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xED78D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xEE03D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xEE03D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xEE8ED)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xEE8ED",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xEF19D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xEF19D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xEFA3D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xEFA3D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xF02ED)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xF02ED",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xF0B8D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xF0B8D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xF143D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xF143D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xF1CED)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xF1CED",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xF259D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xF259D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xF2E6D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xF2E6D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xF576D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xF576D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xF5F6D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xF5F6D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xF676D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xF676D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xF6F6D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xF6F6D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xF776D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xF776D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xF7F6D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xF7F6D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xF811D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xF811D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xF8DAD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xF8DAD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xF8F5D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xF8F5D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xF910D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xF910D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xFC06D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xFC06D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xFC74D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xFC74D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1041F9)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1041F9",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x10456D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x10456D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x10D177)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x10D177",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x11B25D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x11B25D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x11BBDD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x11BBDD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x11C45D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x11C45D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x11CC5D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x11CC5D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x11FB0D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x11FB0D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x12067D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x12067D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1207BD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1207BD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x12152D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x12152D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x12184D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x12184D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x122EDD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x122EDD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x12440D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x12440D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1245ED)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1245ED",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1247CD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1247CD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1249AD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1249AD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x124B8D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x124B8D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x124D6D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x124D6D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x12531D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x12531D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1254CD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1254CD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x125AED)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x125AED",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x13316D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x13316D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1339ED)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1339ED",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1341ED)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1341ED",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x134A8D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x134A8D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x13530D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x13530D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x135B0D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x135B0D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x13630D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x13630D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1374ED)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1374ED",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x13761D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x13761D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x138DDD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x138DDD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x138F2D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x138F2D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x13944D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x13944D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x13992D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x13992D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x13EC5D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x13EC5D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x143595)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x143595",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1504BD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1504BD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x150CBD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x150CBD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1514BD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1514BD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x15166D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x15166D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x15240D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x15240D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x15EACD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x15EACD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x15EC7D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x15EC7D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x16461D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x16461D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x17799D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x17799D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x17819D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x17819D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x17AF0D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x17AF0D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x17B19D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x17B19D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x17B2CD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x17B2CD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x17B3FD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x17B3FD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x17B77D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x17B77D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x17B8AD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x17B8AD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x17BE3D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x17BE3D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x17D50D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x17D50D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x17D7AD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x17D7AD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x17D95D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x17D95D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x17DD6D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x17DD6D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x17DF9D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x17DF9D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x17E14D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x17E14D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x17E27D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x17E27D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x17E3AD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x17E3AD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x17F4AD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x17F4AD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x17F65D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x17F65D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x17F80D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x17F80D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x18CB9D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x18CB9D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x18D53D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x18D53D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x18D80D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x18D80D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x18E14D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x18E14D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x18E3ED)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x18E3ED",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x18EA8D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x18EA8D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1A78EE)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1A78EE",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1AEC2D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1AEC2D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1AEFBD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1AEFBD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1C470A)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1C470A",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1D3B6D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1D3B6D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1FD994)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1FD994",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1FD9EB)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1FD9EB",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x2013DD)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x2013DD",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x205FB4)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x205FB4",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x22FF0D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x22FF0D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x24278D)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x24278D",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x32C130)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x32C130",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x3BBA0F)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x3BBA0F",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x3BBB7F)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x3BBB7F",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x3BBCEF)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x3BBCEF",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x639A38)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x639A38",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x67ECF1)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x67ECF1",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x82D12F)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x82D12F",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x851927)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x851927",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x8FA277)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x8FA277",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x90A307)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x90A307",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x93ED56)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x93ED56",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xA0B106)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xA0B106",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xA2D42A)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xA2D42A",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xA62786)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xA62786",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xAA440E)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xAA440E",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xC66C90)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xC66C90",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xCCFD07)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xCCFD07",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xCD0BC0)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xCD0BC0",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xCD2272)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xCD2272",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xD59CD1)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xD59CD1",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0xE8F3AA)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0xE8F3AA",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x101CFA1)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x101CFA1",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x10A78CA)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x10A78CA",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x10E0491)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x10E0491",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x10E1401)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x10E1401",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x10E1552)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x10E1552",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1271FEE)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1271FEE",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1398422)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1398422",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x152A3C6)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x152A3C6",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x15A1C81)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x15A1C81",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x15DA3B9)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x15DA3B9",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x15E2224)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x15E2224",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x15E98A6)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x15E98A6",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x18BDCFC)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x18BDCFC",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x18C4D5E)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x18C4D5E",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x195CE9E)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x195CE9E",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x1966C81)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x1966C81",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x197F6D0)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x197F6D0",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x197FD75)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x197FD75",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x19D212B)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x19D212B",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    },
+    {
+      "name": "UE5 TArray Sign-Bit Guard (0x19D29F2)",
+      "enabled": true,
+      "memory": [
+        {
+          "offset": "0x19D29F2",
+          "off": "84",
+          "on": "8e"
+        }
+      ]
+    }
+  ]
+}
