@@ -711,7 +711,7 @@ class MelkorSWindow(QMainWindow):
             self.lbl_cover.setVisible(False)
 
         # Check for active GameDB Profile & Patch
-        from gui.game_db import GameDB
+        from game_db import GameDB
         gdb = GameDB()
         profile = gdb.get_profile(game.title_id, eboot_path=game.eboot_path, title_name=game.title_name)
 
@@ -941,7 +941,7 @@ class MelkorSWindow(QMainWindow):
             return
 
         title_id = getattr(self.selected_game, "title_id", "")
-        from gui.game_db import GameDB
+        from game_db import GameDB
         gdb = GameDB()
         profile = gdb.get_profile(title_id, eboot_path=self.selected_game.eboot_path, title_name=self.selected_game.title_name)
 
@@ -986,7 +986,6 @@ class MelkorSWindow(QMainWindow):
             # Shader Optimization Level (Performance / Size / None)
             shader_opt = self.config.get("shader_opt", "Performance")
             extra_args.extend(["--shader-optimization-type", shader_opt])
-            extra_args.extend(["--shader-log-direction", "Silent"])
 
             # Frame Presentation Mode (Immediate = No VSync lag, max FPS)
             present_m = self.config.get("present_mode", "Immediate")

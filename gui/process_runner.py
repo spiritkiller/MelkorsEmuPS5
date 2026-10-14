@@ -42,8 +42,8 @@ class ProcessRunner(QObject):
         if match:
             title_id = match.group(1).upper()
 
-        from gui.game_db import GameDB
-        from gui.patch_manager import PatchManager
+        from game_db import GameDB
+        from patch_manager import PatchManager
 
         gdb = GameDB()
         profile = gdb.get_profile(title_id, eboot_path=target_path)
@@ -91,10 +91,17 @@ class ProcessRunner(QObject):
             if profile.readback_bypass:
                 args.extend(["--readback-linear-images", "false"])
 
-            # Merge profile extra CLI arguments (prevent duplicates)
+            # Merge profile extra CLI arguments (skip duplicates by flag name)
+            seen_flags = set()
+            for a in args:
+                if a.startswith("--") or a.startswith("-"):
+                    seen_flags.add(a)
             for extra in profile.extra_cli_args:
-                if extra not in args:
-                    args.append(extra)
+                if extra.startswith("-") and extra in seen_flags:
+                    continue
+                args.append(extra)
+                if extra.startswith("-"):
+                    seen_flags.add(extra)
 
             # Auto-detect and attach stability patch
             try:
