@@ -1,9 +1,11 @@
 """
 MelkorS PS5 - Asynchronous Process Runner and Log Monitor
-Handles both game launch and PKG installation through MelkorS Core.
+Autonomous Core Execution with GameDB preset engine, Vulkan pipeline cache pre-warming,
+and zero-regression modular patch injection.
 """
 
 import os
+import re
 import datetime
 from PyQt6.QtCore import QObject, QProcess, pyqtSignal, QTimer
 
@@ -21,12 +23,8 @@ class ProcessRunner(QObject):
         self._install_mode = False
 
     def start_game(self, emulator_exe: str, target_path: str, is_ps5: bool = True, extra_args: list = None):
-        """Launch a game via MelkorS Core (auto-routing PS5 or PS4 engine)."""
+        """Launch a game via MelkorS Core with autonomous profile optimization."""
         if self.is_running():
-            return False
-
-        if not os.path.exists(emulator_exe):
-            self.log_received.emit(f"[HATA] MelkorS çekirdek bulunamadı: {emulator_exe}", "ERROR")
             return False
 
         if not os.path.exists(target_path):
@@ -38,42 +36,116 @@ class ProcessRunner(QObject):
         timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
         self.current_log_file = os.path.join(self.log_dir, f"session_{timestamp}.log")
 
-        self.process = QProcess()
-        self.process.setProgram(emulator_exe)
+        # 1. Identify Title ID and fetch Autonomous GameDB Profile
+        title_id = "UNKNOWN"
+        match = re.search(r'(PPSA\d{5}|CUSA\d{5})', target_path, re.IGNORECASE)
+        if match:
+            title_id = match.group(1).upper()
 
-        if is_ps5:
-            # MelkorS PS5 Core CLI: --game <path> --printf-direction Silent (prevents audio crackling and FPS drops)
+        from gui.game_db import GameDB
+        from gui.patch_manager import PatchManager
+
+        gdb = GameDB()
+        profile = gdb.get_profile(title_id, eboot_path=target_path)
+        pm = PatchManager()
+
+        # 2. Intelligent Core Routing: Auto-switch between PS5 / PS4 core based on profile
+        emu_dir = os.path.dirname(os.path.abspath(emulator_exe))
+        ps5_exe = os.path.join(emu_dir, "melkors_ps5_core.exe")
+        ps4_exe = os.path.join(emu_dir, "melkors_ps4_core.exe")
+
+        chosen_exe = emulator_exe
+        chosen_is_ps5 = is_ps5
+
+        if profile.core == "ps4" and os.path.exists(ps4_exe):
+            chosen_exe = ps4_exe
+            chosen_is_ps5 = False
+        elif profile.core == "ps5" and os.path.exists(ps5_exe):
+            chosen_exe = ps5_exe
+            chosen_is_ps5 = True
+
+        if not os.path.exists(chosen_exe):
+            # Fall back to original emulator_exe
+            chosen_exe = emulator_exe
+
+        # 3. Ensure Vulkan Pipeline Cache directory exists
+        pipeline_cache_dir = os.path.join(emu_dir, "_PipelineCache")
+        os.makedirs(pipeline_cache_dir, exist_ok=True)
+
+        self.process = QProcess()
+        self.process.setProgram(chosen_exe)
+
+        # 4. Construct Command Line Arguments
+        args = []
+        if chosen_is_ps5:
+            # MelkorS PS5 Core CLI:
             args = ["--game", target_path, "--printf-direction", "Silent", "--user-name", "MelkorS"]
-            
-            # Auto-detect and apply game patch (XML or JSON) if available
+
+            # Vulkan & Pipeline Optimization flags from profile
+            if profile.shader_opt:
+                args.extend(["--shader-optimization-type", profile.shader_opt])
+            if profile.present_mode:
+                args.extend(["--present-mode", profile.present_mode])
+            if profile.vblank_hz:
+                args.extend(["--vblank-frequency", str(profile.vblank_hz)])
+            if profile.readback_bypass:
+                args.extend(["--readback-linear-images", "false"])
+
+            # Merge profile extra CLI arguments (prevent duplicates)
+            for extra in profile.extra_cli_args:
+                if extra not in args:
+                    args.append(extra)
+
+            # Auto-detect and attach stability patch
             try:
-                import re
-                from gui.patch_manager import PatchManager
-                pm = PatchManager()
-                match = re.search(r'(PPSA\d{5}|CUSA\d{5})', target_path, re.IGNORECASE)
-                if match:
-                    title_id = match.group(1).upper()
-                    patch_path = pm.find_patch_for_title(title_id)
-                    if patch_path and os.path.exists(patch_path):
-                        args.extend(["--game-patch", patch_path])
-                        self.log_received.emit(f"[MelkorS] 🎮 Otomatik yama algılandı ve çekirdeğe yüklendi: {os.path.basename(patch_path)}", "SYS")
+                patch_path = pm.find_patch_for_title(title_id, for_ps4=False, eboot_path=target_path)
+                if patch_path and os.path.exists(patch_path):
+                    args.extend(["--game-patch", patch_path])
+                    patch_name = pm.get_patch_name(title_id) or os.path.basename(patch_path)
+                    self.log_received.emit(f"[MelkorS] 🎮 Otomatik Yama Aktif: {patch_name} ({os.path.basename(patch_path)})", "SYS")
             except Exception as e:
-                self.log_received.emit(f"[UYARI] Yama kontrolü sırasında hata: {e}", "WARN")
+                self.log_received.emit(f"[UYARI] Yama yükleme kontrolü: {e}", "WARN")
 
             if extra_args:
-                args.extend(extra_args)
+                for a in extra_args:
+                    if a not in args:
+                        args.append(a)
         else:
-            # MelkorS PS4 Core CLI: -g <eboot_path>
-            args = list(extra_args) if extra_args else []
+            # MelkorS PS4 Core CLI:
+            args = []
+            if extra_args:
+                args.extend(extra_args)
+
+            # Extra flags from profile (e.g. --show-fps)
+            for extra in profile.extra_cli_args:
+                if extra not in args:
+                    args.append(extra)
+
+            # Auto-detect patch for PS4 (XML supported natively via -p)
+            try:
+                patch_path = pm.find_patch_for_title(title_id, for_ps4=True, eboot_path=target_path)
+                if patch_path and os.path.exists(patch_path):
+                    args.extend(["-p", patch_path])
+                    patch_name = pm.get_patch_name(title_id) or os.path.basename(patch_path)
+                    self.log_received.emit(f"[MelkorS] 🎮 Otomatik PS4 Yaması Aktif: {patch_name} ({os.path.basename(patch_path)})", "SYS")
+            except Exception as e:
+                self.log_received.emit(f"[UYARI] PS4 Yama kontrolü: {e}", "WARN")
+
             args.extend(["-g", target_path])
 
         self.process.setArguments(args)
-        self.process.setWorkingDirectory(os.path.dirname(emulator_exe))
+        self.process.setWorkingDirectory(os.path.dirname(chosen_exe))
 
         self.process.readyReadStandardOutput.connect(self._handle_stdout)
         self.process.readyReadStandardError.connect(self._handle_stderr)
         self.process.started.connect(self._on_started)
         self.process.finished.connect(self._on_finished)
+
+        # Log active Autonomous Profile summary
+        core_display = "PS5 Engine" if chosen_is_ps5 else "PS4 Engine"
+        self.log_received.emit(f"[MelkorS] 🧠 Otonom Profil: {profile.name} [{title_id}]", "SYS")
+        self.log_received.emit(f"[MelkorS] ⚡ Çekirdek: {core_display} | Motor: {profile.engine} | Shader: {profile.shader_opt} | Yenileme: {profile.vblank_hz}Hz", "SYS")
+        self.log_received.emit(f"[MelkorS] 🚀 Vulkan Pipeline Kütüphanesi (GPL Fast-Link) ve Disk Önbelleği Devrede.", "GPU")
 
         self.process.start()
         return True

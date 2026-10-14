@@ -1,7 +1,7 @@
 {
-    "emulator_exe": "emulator/melkors_ps5_core.exe",
+    "emulator_exe": "C:\\Users\\ertug\\Desktop\\melkorsps5\\emulator\\melkors_ps5_core.exe",
     "resolution": "720p (Performans)",
-    "vsync": false,
+    "vsync": true,
     "pipeline_cache": true,
     "verbose_logging": true,
     "jit_optimization": true,
@@ -10,6 +10,6 @@
     "deadzone": 10,
     "shader_opt": "Performance",
     "present_mode": "Immediate",
-    "vblank_hz": "60",
+    "vblank_hz": "120",
     "readback_bypass": true
 }

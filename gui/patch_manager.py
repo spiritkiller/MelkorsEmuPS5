@@ -3,13 +3,16 @@ MelkorS PS5 - Unified XML & JSON Game Patch Manager
 Supports:
 1. GoldHEN / ETAHen / MelkorS Core JSON patch format (.json)
 2. shadPS4 XML patch format (.xml)
-Automatically resolves, converts, and injects patches into MelkorS Core via --game-patch.
+3. MelkorS official patch repository (data/patches/melkors/files.json)
+4. Autonomous UE5 Stability Patch Scanner & Generator
+Automatically resolves, converts, and injects patches into MelkorS Core via --game-patch or -p.
 """
 
 import os
 import re
 import json
 import xml.etree.ElementTree as ET
+from typing import Optional, Tuple
 
 class PatchManager:
     def __init__(self, workspace_dir: str = None):
@@ -17,32 +20,98 @@ class PatchManager:
             workspace_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
         self.workspace_dir = workspace_dir
         self.patches_dir = os.path.join(workspace_dir, "patches")
+        self.official_patches_dir = os.path.join(workspace_dir, "data", "patches", "melkors")
         os.makedirs(self.patches_dir, exist_ok=True)
 
-    def find_patch_for_title(self, title_id: str) -> str:
+    def find_patch_for_title(self, title_id: str, for_ps4: bool = False, eboot_path: str = "") -> str:
         """
         Locates an active patch file for a game by Title ID.
-        Checks for .json first, then .xml. If .xml is found, converts it to compatible .json.
-        Returns the absolute path to the ready-to-use JSON patch file, or "" if none found.
+        Checks local patches directory -> official patch repository -> autonomous UE5 scanner.
+        If for_ps4=True, returns XML directly if available (PS4 core natively supports XML).
+        If for_ps4=False, ensures a converted JSON patch is returned for PS5 core.
         """
         if not title_id:
             return ""
 
-        json_path = os.path.join(self.patches_dir, f"{title_id}.json")
-        xml_path = os.path.join(self.patches_dir, f"{title_id}.xml")
+        clean_id = title_id.strip().upper()
+        json_path = os.path.join(self.patches_dir, f"{clean_id}.json")
+        xml_path = os.path.join(self.patches_dir, f"{clean_id}.xml")
 
-        # 1. If JSON patch already exists, return it
+        # 1. Local JSON patch exists
         if os.path.exists(json_path):
             return json_path
 
-        # 2. If XML patch exists, convert to JSON for MelkorS Core
+        # 2. Local XML patch exists
         if os.path.exists(xml_path):
+            if for_ps4:
+                return xml_path
             converted = self.convert_xml_to_json(xml_path, json_path)
             if converted:
                 return json_path
 
-        # 3. Check inside game directory for patches
-        # e.g., games/<GameFolder>/patch.json or patches/<title_id>.json
+        # 3. Check official community patch repo (data/patches/melkors/files.json)
+        official_xml = self._find_official_patch(clean_id)
+        if official_xml and os.path.exists(official_xml):
+            if for_ps4:
+                return official_xml
+            converted = self.convert_xml_to_json(official_xml, json_path)
+            if converted and os.path.exists(json_path):
+                return json_path
+            return official_xml
+
+        # 4. Autonomous UE5 crash scanner fallback if eboot is available
+        if eboot_path and os.path.exists(eboot_path):
+            auto_json = self.scan_and_generate_ue5_patch(eboot_path, clean_id)
+            if auto_json and os.path.exists(auto_json):
+                return auto_json
+
+        return ""
+
+    def _find_official_patch(self, title_id: str) -> Optional[str]:
+        """Looks up Title ID in data/patches/melkors/files.json."""
+        files_json = os.path.join(self.official_patches_dir, "files.json")
+        if not os.path.exists(files_json):
+            return None
+
+        try:
+            with open(files_json, "r", encoding="utf-8") as f:
+                mapping = json.load(f)
+            for xml_name, id_list in mapping.items():
+                if title_id in id_list:
+                    xml_full = os.path.join(self.official_patches_dir, xml_name)
+                    if os.path.exists(xml_full):
+                        return xml_full
+        except Exception as e:
+            print(f"[PatchManager] Error reading official patches: {e}")
+        return None
+
+    def get_patch_name(self, title_id: str) -> str:
+        """Returns a user-friendly name for the patch if available."""
+        if not title_id:
+            return ""
+
+        clean_id = title_id.strip().upper()
+        json_path = os.path.join(self.patches_dir, f"{clean_id}.json")
+        if os.path.exists(json_path):
+            try:
+                with open(json_path, "r", encoding="utf-8") as f:
+                    doc = json.load(f)
+                return doc.get("name", "MelkorS Auto-Patch")
+            except Exception:
+                pass
+
+        xml_path = os.path.join(self.patches_dir, f"{clean_id}.xml")
+        if not os.path.exists(xml_path):
+            xml_path = self._find_official_patch(clean_id)
+
+        if xml_path and os.path.exists(xml_path):
+            try:
+                tree = ET.parse(xml_path)
+                root = tree.getroot()
+                return root.attrib.get("Name", os.path.basename(xml_path))
+            except Exception:
+                return os.path.basename(xml_path)
+
         return ""
 
     def convert_xml_to_json(self, xml_path: str, output_json_path: str) -> bool:
@@ -70,7 +139,6 @@ class PatchManager:
                         continue
 
                     # In MelkorS JSON format: offset, off (zeros if unknown), on (target bytes)
-                    # Core matches based on non-zero off, or if off is dummy, writes directly
                     off_dummy = "00" * (len(val_str) // 2) if len(val_str) % 2 == 0 else "00"
 
                     mods.append({
@@ -110,16 +178,22 @@ class PatchManager:
         if not os.path.exists(scanner_script) or not os.path.exists(eboot_path):
             return ""
 
-        from tools.ue5_patch_scanner import UE5PatchScanner
-        scanner = UE5PatchScanner(eboot_path, title_id=title_id, app_ver=app_ver)
-        scanner.scan_all()
+        try:
+            from tools.ue5_patch_scanner import UE5PatchScanner
+            scanner = UE5PatchScanner(eboot_path, title_id=title_id, app_ver=app_ver)
+            patches = scanner.scan_all()
+            if not patches:
+                return ""
 
-        json_out = os.path.join(self.patches_dir, f"{title_id}.json")
-        xml_out = os.path.join(self.patches_dir, f"{title_id}.xml")
-        scanner.export_json(json_out)
-        scanner.export_xml(xml_out)
+            json_out = os.path.join(self.patches_dir, f"{title_id}.json")
+            xml_out = os.path.join(self.patches_dir, f"{title_id}.xml")
+            scanner.export_json(json_out)
+            scanner.export_xml(xml_out)
 
-        return json_out
+            return json_out
+        except Exception as e:
+            print(f"[PatchManager] Scan failed: {e}")
+            return ""
 
     def remove_patch_for_title(self, title_id: str, eboot_path: str = "") -> dict:
         """
@@ -131,8 +205,10 @@ class PatchManager:
             result["success"] = False
             return result
 
+        clean_id = title_id.strip().upper()
+
         # 1. Remove JSON patch
-        json_path = os.path.join(self.patches_dir, f"{title_id}.json")
+        json_path = os.path.join(self.patches_dir, f"{clean_id}.json")
         if os.path.exists(json_path):
             try:
                 os.remove(json_path)
@@ -141,7 +217,7 @@ class PatchManager:
                 print(f"[PatchManager] Could not remove {json_path}: {e}")
 
         # 2. Remove XML patch
-        xml_path = os.path.join(self.patches_dir, f"{title_id}.xml")
+        xml_path = os.path.join(self.patches_dir, f"{clean_id}.xml")
         if os.path.exists(xml_path):
             try:
                 os.remove(xml_path)

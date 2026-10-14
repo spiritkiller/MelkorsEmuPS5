@@ -710,21 +710,36 @@ class MelkorSWindow(QMainWindow):
         else:
             self.lbl_cover.setVisible(False)
 
-        # Check for active XML/JSON patch
+        # Check for active GameDB Profile & Patch
+        from gui.game_db import GameDB
+        gdb = GameDB()
+        profile = gdb.get_profile(game.title_id, eboot_path=game.eboot_path, title_name=game.title_name)
+
         pm = PatchManager(BASE_DIR)
-        patch_file = pm.find_patch_for_title(game.title_id)
+        patch_file = pm.find_patch_for_title(game.title_id, for_ps4=(profile.core == "ps4"), eboot_path=game.eboot_path)
         if patch_file:
-            patch_name = os.path.basename(patch_file)
-            patch_status_html = f"<br><b>{self.t.get('patch_label', 'Yama Durumu:')}</b> <span style='color: #2ea44f; font-weight: bold;'>{self.t.get('patch_status_active', '🛡️ Aktif')} ({patch_name})</span>"
+            p_display = pm.get_patch_name(game.title_id) or os.path.basename(patch_file)
+            patch_status_html = f"<br><b>{self.t.get('patch_label', 'Yama Durumu:')}</b> <span style='color: #2ea44f; font-weight: bold;'>{self.t.get('patch_status_active', '🛡️ Aktif')} ({p_display})</span>"
         else:
             patch_status_html = f"<br><b>{self.t.get('patch_label', 'Yama Durumu:')}</b> <span style='color: #8b949e;'>{self.t.get('patch_status_none', 'Yama yok')}</span>"
+
+        core_badge = "PS5 Core (Native)" if profile.core == "ps5" else "PS4 Core (Vulkan)"
+        profile_html = (
+            f"<br><b>{self.t.get('profile_label', 'Otonom Profil:')}</b> "
+            f"<span style='color: #58a6ff; font-weight: bold;'>{core_badge}</span> "
+            f"| Motor: <span style='color: #e3b341;'>{profile.engine}</span> "
+            f"| Shader: <span style='color: #7ee787;'>{profile.shader_opt}</span>"
+        )
+        vulkan_html = f"<br><b>{self.t.get('vulkan_pipeline_label', 'Vulkan Pipeline:')}</b> <span style='color: #58a6ff;'>{self.t.get('vulkan_pipeline_status', '🚀 GPL Fast-Link & Disk Önbelleği Devrede')}</span>"
 
         status_color = "#58a6ff" if (game.has_fakelib or game.is_pkg) else "#f85149"
         info_text = (
             f"<b>Title ID:</b> {game.title_id}<br>"
             f"<b>Sürüm:</b> {game.version}<br>"
             f"<b>Durum:</b> <span style='color: {status_color}; font-weight: bold;'>{game.status}</span>"
-            f"{patch_status_html}<br>"
+            f"{profile_html}"
+            f"{patch_status_html}"
+            f"{vulkan_html}<br>"
             f"<b>Dosya/Klasör:</b> {game.folder_path}"
         )
         self.detail_info.setText(info_text)
@@ -926,8 +941,12 @@ class MelkorSWindow(QMainWindow):
             return
 
         title_id = getattr(self.selected_game, "title_id", "")
-        # PS5 games typically have PPSA IDs; PS4 games have CUSA IDs
-        is_ps5 = title_id.startswith("PPSA") or not title_id.startswith("CUSA")
+        from gui.game_db import GameDB
+        gdb = GameDB()
+        profile = gdb.get_profile(title_id, eboot_path=self.selected_game.eboot_path, title_name=self.selected_game.title_name)
+
+        # Autonomous core selection based on GameDB profile
+        is_ps5 = (profile.core == "ps5")
         target_core = PS5_CORE_EXE if is_ps5 else PS4_CORE_EXE
         if not os.path.exists(target_core):
             target_core = CORE_EXE

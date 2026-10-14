@@ -82,7 +82,10 @@ TRANSLATIONS = {
         "patch_removed_files": "Silinen yama dosyaları:",
         "patch_restored_backup": "Orijinal eboot.bin yedeği geri yüklendi.",
         "patch_scan_complete_title": "Yama Oluşturuldu",
-        "patch_scan_complete_msg": "UE5 Motor Taraması Başarıyla Tamamlandı!\n\nToplam {count} adet motor çökme açığı tespit edildi.\n\nOluşturulan Yamalar:\n• {json} (MelkorS / GoldHEN Mod)\n• {xml} (shadPS4 XML Mod)\n\nBu yamalar oyun başlatılırken MelkorS Core tarafından bellek üzerinde otomatik olarak uygulanacaktır."
+        "patch_scan_complete_msg": "UE5 Motor Taraması Başarıyla Tamamlandı!\n\nToplam {count} adet motor çökme açığı tespit edildi.\n\nOluşturulan Yamalar:\n• {json} (MelkorS / GoldHEN Mod)\n• {xml} (shadPS4 XML Mod)\n\nBu yamalar oyun başlatılırken MelkorS Core tarafından bellek üzerinde otomatik olarak uygulanacaktır.",
+        "profile_label": "Otonom Profil:",
+        "vulkan_pipeline_label": "Vulkan Pipeline:",
+        "vulkan_pipeline_status": "🚀 GPL Fast-Link & Disk Önbelleği Devrede"
     },
     "en": {
         "title": "MelkorS PS5 Control Center",
@@ -162,6 +165,9 @@ TRANSLATIONS = {
         "patch_removed_files": "Deleted patch files:",
         "patch_restored_backup": "Original eboot.bin backup restored.",
         "patch_scan_complete_title": "Patch Generated",
-        "patch_scan_complete_msg": "UE5 Engine Scan Successfully Completed!\n\nDetected {count} engine-level crash vectors.\n\nGenerated Patches:\n• {json} (MelkorS / GoldHEN Mod)\n• {xml} (shadPS4 XML Mod)\n\nThese patches will be automatically applied in memory by MelkorS Core during launch."
+        "patch_scan_complete_msg": "UE5 Engine Scan Successfully Completed!\n\nDetected {count} engine-level crash vectors.\n\nGenerated Patches:\n• {json} (MelkorS / GoldHEN Mod)\n• {xml} (shadPS4 XML Mod)\n\nThese patches will be automatically applied in memory by MelkorS Core during launch.",
+        "profile_label": "Autonomous Profile:",
+        "vulkan_pipeline_label": "Vulkan Pipeline:",
+        "vulkan_pipeline_status": "🚀 GPL Fast-Link & Disk Cache Active"
     }
 }
