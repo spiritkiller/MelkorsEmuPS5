@@ -120,3 +120,46 @@ class PatchManager:
         scanner.export_xml(xml_out)
 
         return json_out
+
+    def remove_patch_for_title(self, title_id: str, eboot_path: str = "") -> dict:
+        """
+        Removes/disables active XML and JSON patches for the given Title ID,
+        and restores the original eboot.bin from backup (.orig or .bak) if present.
+        """
+        result = {"success": True, "files_deleted": [], "backup_restored": False}
+        if not title_id:
+            result["success"] = False
+            return result
+
+        # 1. Remove JSON patch
+        json_path = os.path.join(self.patches_dir, f"{title_id}.json")
+        if os.path.exists(json_path):
+            try:
+                os.remove(json_path)
+                result["files_deleted"].append(os.path.basename(json_path))
+            except Exception as e:
+                print(f"[PatchManager] Could not remove {json_path}: {e}")
+
+        # 2. Remove XML patch
+        xml_path = os.path.join(self.patches_dir, f"{title_id}.xml")
+        if os.path.exists(xml_path):
+            try:
+                os.remove(xml_path)
+                result["files_deleted"].append(os.path.basename(xml_path))
+            except Exception as e:
+                print(f"[PatchManager] Could not remove {xml_path}: {e}")
+
+        # 3. Restore eboot.bin from backup if present
+        if eboot_path and os.path.exists(eboot_path):
+            import shutil
+            orig_path = eboot_path + ".orig"
+            bak_path = eboot_path + ".bak"
+            restore_src = orig_path if os.path.exists(orig_path) else (bak_path if os.path.exists(bak_path) else "")
+            if restore_src:
+                try:
+                    shutil.copy2(restore_src, eboot_path)
+                    result["backup_restored"] = True
+                except Exception as e:
+                    print(f"[PatchManager] Could not restore eboot backup: {e}")
+
+        return result

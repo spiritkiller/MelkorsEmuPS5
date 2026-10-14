@@ -67,7 +67,22 @@ TRANSLATIONS = {
         "diag_category": "Hata Sınıfı:",
         "diag_rec_box": "🛠️ Önerilen Çözüm ve Kod Yaması",
         "diag_suspicious": "Yakalanan Şüpheli Log Satırları:",
-        "close": "Kapat"
+        "close": "Kapat",
+        "auto_patch_btn": "⚡ UE5 Yama Tara / Oluştur",
+        "auto_patch_tooltip": "Unreal Engine 5 motoruna ait bilinen çökme açıklarını tarar ve otomatik XML/JSON yama dosyası oluşturur.",
+        "remove_patch_btn": "🗑️ Yamayı Kaldır",
+        "remove_patch_tooltip": "Oyunun aktif XML/JSON yamasını kaldırır ve varsa orijinal eboot.bin yedeğini geri yükler.",
+        "patch_status_active": "🛡️ Aktif",
+        "patch_status_none": "Yama yok",
+        "patch_label": "Yama Durumu:",
+        "patch_remove_confirm_title": "Yamayı Kaldır",
+        "patch_remove_confirm_msg": "'{name}' ({id}) için uygulanan tüm yamaları kaldırmak ve varsa orijinal eboot.bin yedeğini geri yüklemek istiyor musunuz?",
+        "patch_removed_title": "Yama Kaldırıldı",
+        "patch_removed_success": "Yama başarıyla kaldırıldı!",
+        "patch_removed_files": "Silinen yama dosyaları:",
+        "patch_restored_backup": "Orijinal eboot.bin yedeği geri yüklendi.",
+        "patch_scan_complete_title": "Yama Oluşturuldu",
+        "patch_scan_complete_msg": "UE5 Motor Taraması Başarıyla Tamamlandı!\n\nToplam {count} adet motor çökme açığı tespit edildi.\n\nOluşturulan Yamalar:\n• {json} (MelkorS / GoldHEN Mod)\n• {xml} (shadPS4 XML Mod)\n\nBu yamalar oyun başlatılırken MelkorS Core tarafından bellek üzerinde otomatik olarak uygulanacaktır."
     },
     "en": {
         "title": "MelkorS PS5 Control Center",
@@ -132,6 +147,21 @@ TRANSLATIONS = {
         "diag_category": "Failure Class:",
         "diag_rec_box": "🛠️ Recommended Fix & Code Patch",
         "diag_suspicious": "Captured Suspicious Log Lines:",
-        "close": "Close"
+        "close": "Close",
+        "auto_patch_btn": "⚡ Scan / Create UE5 Patch",
+        "auto_patch_tooltip": "Scans Unreal Engine 5 binaries for known crash vectors and generates automatic XML/JSON patches.",
+        "remove_patch_btn": "🗑️ Remove Patch",
+        "remove_patch_tooltip": "Removes active XML/JSON patch and restores the original eboot.bin backup if available.",
+        "patch_status_active": "🛡️ Active",
+        "patch_status_none": "No patch",
+        "patch_label": "Patch Status:",
+        "patch_remove_confirm_title": "Remove Patch",
+        "patch_remove_confirm_msg": "Do you want to remove all applied patches for '{name}' ({id}) and restore the original eboot.bin backup if present?",
+        "patch_removed_title": "Patch Removed",
+        "patch_removed_success": "Patch successfully removed!",
+        "patch_removed_files": "Deleted patch files:",
+        "patch_restored_backup": "Original eboot.bin backup restored.",
+        "patch_scan_complete_title": "Patch Generated",
+        "patch_scan_complete_msg": "UE5 Engine Scan Successfully Completed!\n\nDetected {count} engine-level crash vectors.\n\nGenerated Patches:\n• {json} (MelkorS / GoldHEN Mod)\n• {xml} (shadPS4 XML Mod)\n\nThese patches will be automatically applied in memory by MelkorS Core during launch."
     }
 }

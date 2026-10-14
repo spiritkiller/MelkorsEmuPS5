@@ -312,13 +312,21 @@ class MelkorSWindow(QMainWindow):
         self.btn_extract.clicked.connect(self.extract_selected_pkg)
         actions_box.addWidget(self.btn_extract)
 
-        self.btn_auto_patch = QPushButton("⚡ UE5 Yama Tara / Oluştur")
+        self.btn_auto_patch = QPushButton(self.t["auto_patch_btn"])
         self.btn_auto_patch.setObjectName("secondaryBtn")
         self.btn_auto_patch.setFixedHeight(44)
         self.btn_auto_patch.setVisible(False)
-        self.btn_auto_patch.setToolTip("Unreal Engine 5 motoruna ait bilinen çökme açıklarını tarar ve otomatik XML/JSON yama dosyası oluşturur.")
+        self.btn_auto_patch.setToolTip(self.t["auto_patch_tooltip"])
         self.btn_auto_patch.clicked.connect(self.scan_and_patch_selected_game)
         actions_box.addWidget(self.btn_auto_patch)
+
+        self.btn_remove_patch = QPushButton(self.t["remove_patch_btn"])
+        self.btn_remove_patch.setObjectName("secondaryBtn")
+        self.btn_remove_patch.setFixedHeight(44)
+        self.btn_remove_patch.setVisible(False)
+        self.btn_remove_patch.setToolTip(self.t["remove_patch_tooltip"])
+        self.btn_remove_patch.clicked.connect(self.remove_patch_selected_game)
+        actions_box.addWidget(self.btn_remove_patch)
 
         self.btn_stop = QPushButton(self.t["stop_game"])
         self.btn_stop.setObjectName("stopBtn")
@@ -619,6 +627,10 @@ class MelkorSWindow(QMainWindow):
         self.btn_open_games.setText(self.t["open_games"])
         self.btn_launch.setText(self.t["launch_game"])
         self.btn_stop.setText(self.t["stop_game"])
+        self.btn_auto_patch.setText(self.t["auto_patch_btn"])
+        self.btn_auto_patch.setToolTip(self.t["auto_patch_tooltip"])
+        self.btn_remove_patch.setText(self.t["remove_patch_btn"])
+        self.btn_remove_patch.setToolTip(self.t["remove_patch_tooltip"])
         self.btn_diagnose.setText(self.t["auto_diagnose"])
         self.btn_clear.setText(self.t["clear_logs"])
         self.btn_open_logs.setText(self.t["open_logs"])
@@ -703,9 +715,9 @@ class MelkorSWindow(QMainWindow):
         patch_file = pm.find_patch_for_title(game.title_id)
         if patch_file:
             patch_name = os.path.basename(patch_file)
-            patch_status_html = f"<br><b>Yama Durumu:</b> <span style='color: #2ea44f; font-weight: bold;'>🛡️ Aktif ({patch_name})</span>"
+            patch_status_html = f"<br><b>{self.t.get('patch_label', 'Yama Durumu:')}</b> <span style='color: #2ea44f; font-weight: bold;'>{self.t.get('patch_status_active', '🛡️ Aktif')} ({patch_name})</span>"
         else:
-            patch_status_html = "<br><b>Yama Durumu:</b> <span style='color: #8b949e;'>Yama yok</span>"
+            patch_status_html = f"<br><b>{self.t.get('patch_label', 'Yama Durumu:')}</b> <span style='color: #8b949e;'>{self.t.get('patch_status_none', 'Yama yok')}</span>"
 
         status_color = "#58a6ff" if (game.has_fakelib or game.is_pkg) else "#f85149"
         info_text = (
@@ -722,12 +734,56 @@ class MelkorSWindow(QMainWindow):
             self.btn_extract.setVisible(True)
             self.btn_extract.setEnabled(True)
             self.btn_auto_patch.setVisible(False)
+            self.btn_remove_patch.setVisible(False)
         else:
             self.btn_launch.setEnabled(True)
             self.btn_extract.setVisible(False)
             self.btn_auto_patch.setVisible(True)
             self.btn_auto_patch.setEnabled(True)
+            has_patch = bool(patch_file)
+            has_backup = bool(game.eboot_path and (os.path.exists(game.eboot_path + ".orig") or os.path.exists(game.eboot_path + ".bak")))
+            self.btn_remove_patch.setVisible(has_patch or has_backup)
+            self.btn_remove_patch.setEnabled(has_patch or has_backup)
             self.update_modules_tab_for_game(game)
+
+    def remove_patch_selected_game(self):
+        """Removes active patch for selected game and restores eboot backup if available."""
+        if not self.selected_game:
+            return
+
+        game = self.selected_game
+        confirm_title = self.t.get("patch_remove_confirm_title", "Yamayı Kaldır")
+        confirm_msg = self.t.get("patch_remove_confirm_msg", "'{name}' ({id}) için uygulanan tüm yamaları kaldırmak ve varsa orijinal eboot.bin yedeğini geri yüklemek istiyor musunuz?").format(name=game.title_name, id=game.title_id)
+        confirm = QMessageBox.question(
+            self,
+            confirm_title,
+            confirm_msg,
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+        )
+        if confirm != QMessageBox.StandardButton.Yes:
+            return
+
+        pm = PatchManager(BASE_DIR)
+        res = pm.remove_patch_for_title(game.title_id, game.eboot_path)
+
+        details = []
+        if res.get("files_deleted"):
+            prefix = self.t.get("patch_removed_files", "Silinen yama dosyaları:")
+            details.append(f"{prefix} {', '.join(res['files_deleted'])}")
+        if res.get("backup_restored"):
+            details.append(self.t.get("patch_restored_backup", "Orijinal eboot.bin yedeği geri yüklendi."))
+
+        title = self.t.get("patch_removed_title", "Yama Kaldırıldı")
+        if details:
+            msg = self.t.get("patch_removed_success", "Yama başarıyla kaldırıldı!") + "\n\n" + "\n".join(details)
+        else:
+            msg = self.t.get("patch_status_none", "Yama yok")
+
+        QMessageBox.information(self, title, msg)
+
+        # Refresh UI
+        if self.games_list.currentItem():
+            self.on_game_selected(self.games_list.currentItem())
 
     def scan_and_patch_selected_game(self):
         """Scans the selected game for UE5 crash patterns and generates an auto-patch file."""
@@ -741,7 +797,7 @@ class MelkorSWindow(QMainWindow):
             return
 
         self.btn_auto_patch.setEnabled(False)
-        self.btn_auto_patch.setText("⏳ Taranıyor...")
+        self.btn_auto_patch.setText("⏳ ...")
         QApplication.processEvents()
 
         try:
@@ -755,15 +811,13 @@ class MelkorSWindow(QMainWindow):
             scanner.export_json(json_out)
             scanner.export_xml(xml_out)
 
-            msg = (
-                f"UE5 Motor Taraması Başarıyla Tamamlandı!\n\n"
-                f"Toplam {len(patches)} adet motor çökme açığı tespit edildi.\n\n"
-                f"Oluşturulan Yamalar:\n"
-                f"• {os.path.basename(json_out)} (MelkorS / GoldHEN Mod)\n"
-                f"• {os.path.basename(xml_out)} (shadPS4 XML Mod)\n\n"
-                f"Bu yamalar oyun başlatılırken MelkorS Core tarafından bellek üzerinde otomatik olarak uygulanacaktır."
-            )
-            QMessageBox.information(self, "Yama Oluşturuldu", msg)
+            title = self.t.get("patch_scan_complete_title", "Yama Oluşturuldu")
+            msg = self.t.get(
+                "patch_scan_complete_msg",
+                "UE5 Motor Taraması Başarıyla Tamamlandı!\n\nToplam {count} adet motor çökme açığı tespit edildi.\n\nOluşturulan Yamalar:\n• {json} (MelkorS / GoldHEN Mod)\n• {xml} (shadPS4 XML Mod)\n\nBu yamalar oyun başlatılırken MelkorS Core tarafından bellek üzerinde otomatik olarak uygulanacaktır."
+            ).format(count=len(patches), json=os.path.basename(json_out), xml=os.path.basename(xml_out))
+
+            QMessageBox.information(self, title, msg)
 
             # Refresh details UI
             if self.games_list.currentItem():
@@ -773,7 +827,7 @@ class MelkorSWindow(QMainWindow):
             QMessageBox.critical(self, "Hata", f"Yama taraması sırasında hata oluştu:\n{e}")
         finally:
             self.btn_auto_patch.setEnabled(True)
-            self.btn_auto_patch.setText("⚡ UE5 Yama Tara / Oluştur")
+            self.btn_auto_patch.setText(self.t.get("auto_patch_btn", "⚡ UE5 Yama Tara / Oluştur"))
 
     def extract_selected_pkg(self):
         if not self.selected_game or not self.selected_game.is_pkg:
